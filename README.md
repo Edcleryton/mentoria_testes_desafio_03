@@ -16,6 +16,7 @@ API REST para gestão de login de usuários, desenvolvida em Node.js com Express
 
 ## Instalação
 ```bash
+cd mentoria_testes_desafio_03
 npm install
 ```
 
