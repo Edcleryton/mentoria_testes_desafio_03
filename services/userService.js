@@ -1,5 +1,6 @@
 // Usuários de exemplo em memória
 const users = [
+
   { email: 'admin@email.com', password: 'Admin123456!', blocked: false, attempts: 0 },
   { email: 'user@email.com', password: 'User12345678!', blocked: false, attempts: 0 }
 ];
@@ -10,6 +11,7 @@ function findUser(email) {
 
 exports.login = (email, password) => {
   const user = findUser(email);
+
   if (!user) return { status: 'invalid' };
   if (user.blocked) return { status: 'blocked' };
   if (user.password === password) {
@@ -38,6 +40,7 @@ exports.register = (email, password) => {
 
 exports.rememberPassword = (email) => {
   const user = findUser(email);
+
   if (!user) return { status: 'not_found' };
   // Simula envio de instrução de recuperação
   return { status: 'ok' };

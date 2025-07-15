@@ -6,7 +6,15 @@ A documentação interativa da API está disponível em:
 
 [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
+
 Basta iniciar a aplicação e acessar esse link no navegador para visualizar e testar todos os endpoints da API.
+=======
+## Instalação
+```bash
+cd mentoria_testes_desafio_03
+npm install
+```
+
 
 ## Estrutura de Pastas
 
