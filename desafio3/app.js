@@ -29,6 +29,13 @@ app.use('/', userRoutes);
 
 // Inicialização
 const PORT = process.env.PORT || 3000;
+
+// Middleware global de tratamento de erros
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Erro interno do servidor.' });
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 }); 
