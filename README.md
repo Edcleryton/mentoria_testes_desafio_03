@@ -1,52 +1,102 @@
-# API Login de Usuários
+# API de Login de Usuários
 
-API REST para gestão de login de usuários, desenvolvida em Node.js com Express, para fins de estudo de testes automatizados.
+## Documentação Swagger
 
-## Funcionalidades
-- Login de usuário (com bloqueio após 3 tentativas inválidas)
-- Lembrar senha
-- Documentação Swagger em `/api-docs`
+A documentação interativa da API está disponível em:
 
-## Tecnologias Utilizadas
-- Node.js
-- Express
-- Swagger (OpenAPI)
-- Mocha
-- Supertest
+[http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
+
+Basta iniciar a aplicação e acessar esse link no navegador para visualizar e testar todos os endpoints da API.
+=======
 ## Instalação
 ```bash
 cd mentoria_testes_desafio_03
 npm install
 ```
 
-## Como iniciar o servidor
-```bash
-npm start
+
+## Estrutura de Pastas
+
+```
+/
+├── app.js
+├── package.json
+├── package-lock.json
+├── README.md
+├── routes/
+│   └── userRoutes.js
+├── services/
+│   └── userService.js
+├── controllers/
+│   └── userController.js
+├── test/
+│   └── user.test.js
+├── swagger.json
 ```
 
+## Como rodar o projeto
+
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
+2. Inicie a aplicação:
+   ```bash
+   node app.js
+   ```
+3. Acesse a documentação:
+   - [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
 ## Como rodar os testes
+
+Execute:
 ```bash
 npm test
 ```
 
-## Documentação da API
-Acesse a documentação Swagger em: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+## Exemplos de Requisições
+
+### Cadastro de Usuário
+```http
+POST /register
+Content-Type: application/json
+{
+  "email": "usuario@email.com",
+  "password": "SenhaForte123!"
+}
+```
+
+### Login
+```http
+POST /login
+Content-Type: application/json
+{
+  "email": "usuario@email.com",
+  "password": "SenhaForte123!"
+}
+```
+
+### Recuperação de Senha
+```http
+POST /remember-password
+Content-Type: application/json
+{
+  "email": "usuario@email.com"
+}
+```
+
+## Dependências principais
+- express
+- swagger-ui-express
+- swagger-jsdoc
+- mocha (testes)
+- supertest (testes)
+
+## Observações
+- O arquivo `swagger.json` contém toda a documentação da API.
+- Para rodar a API em outra porta, defina a variável de ambiente `PORT`.
+- O cadastro exige email válido e senha forte (12-16 caracteres, maiúscula, minúscula, número e caractere especial).
 
 ---
-
-**Projeto para fins de estudo. Não utilizar em produção.** 
-
-## Códigos de Status da API
-
-| Código | Nome do Status         | Cenário de Aplicação                                                                                   |
-|--------|-----------------------|--------------------------------------------------------------------------------------------------------|
-| 200    | OK                    | Requisição bem-sucedida. Exemplo: login realizado com sucesso ou instruções de recuperação enviadas.   |
-| 201    | Created               | Recurso criado com sucesso. Exemplo: sessão de login criada ou solicitação de recuperação registrada.  |
-| 203    | Non-Authoritative Information | Requisição bem-sucedida, mas as informações retornadas podem ser parciais ou de fonte não-autoritativa. |
-| 400    | Bad Request           | A requisição está mal formatada ou faltam campos obrigatórios (ex: username/senha).                    |
-| 401    | Unauthorized          | As credenciais fornecidas (username ou senha) estão incorretas.                                        |
-| 403    | Forbidden             | O usuário está autenticado, mas não tem permissão para acessar o recurso ou realizar a ação.           |
-| 404    | Not Found             | Usuário não encontrado (ex: ao solicitar lembrar senha para usuário inexistente).                      |
-| 429    | Too Many Requests     | A conta foi bloqueada temporariamente devido a múltiplas tentativas de login falhas.                   |
-| 500    | Internal Server Error | Ocorreu um erro inesperado no servidor.                                                                | 
+Se precisar de mais informações, consulte o arquivo `swagger.json` ou a documentação em `/api-docs`. 

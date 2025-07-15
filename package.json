@@ -1,7 +1,9 @@
 {
   "name": "api-login-usuarios",
   "version": "1.0.0",
-  "description": "Mentoria 2.0 - API REST para gestão de login de usuários (desafio #3)",
+
+  "description": "API REST para gestão de login de usuários (desafio de testes)",
+
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -23,7 +25,9 @@
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
-    "chai": "4.5.0",
+
+    "chai": "^5.2.1",
+
     "mocha": "^10.2.0",
     "supertest": "^6.3.3"
   }
