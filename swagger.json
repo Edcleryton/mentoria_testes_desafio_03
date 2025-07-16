@@ -11,6 +11,13 @@
     }
   ],
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "LoginRequest": {
         "type": "object",
@@ -110,7 +117,20 @@
         },
         "responses": {
           "200": { "description": "OK. Login bem-sucedido." },
-          "201": { "description": "Created. Login realizado e sessão criada (caso aplicável)." },
+          "201": {
+            "description": "Created. Login realizado e sessão criada (caso aplicável).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string", "description": "JWT de autenticação" }
+                  }
+                }
+              }
+            }
+          },
           "203": { "description": "Non-Authoritative Information. Login realizado, mas informações retornadas podem ser parciais." },
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
@@ -166,6 +186,62 @@
           "201": { "description": "Created. Usuário cadastrado com sucesso." },
           "400": { "$ref": "#/components/responses/BadRequest" },
           "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/admin/user": {
+      "patch": {
+        "summary": "Admin: Atualiza nome ou senha de qualquer usuário",
+        "security": [ { "bearerAuth": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 12, "maxLength": 16 },
+                  "newUsername": { "type": "string", "format": "email" }
+                },
+                "required": ["username"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuário atualizado com sucesso." },
+          "400": { "description": "Dados inválidos." },
+          "401": { "description": "Token não fornecido." },
+          "403": { "description": "Apenas administradores podem alterar outros usuários." },
+          "404": { "description": "Usuário não encontrado." }
+        }
+      }
+    },
+    "/user": {
+      "delete": {
+        "summary": "Admin: Deleta usuário",
+        "security": [ { "bearerAuth": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "format": "email" }
+                },
+                "required": ["username"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuário deletado com sucesso." },
+          "400": { "description": "Username do usuário a ser deletado é obrigatório." },
+          "401": { "description": "Token não fornecido." },
+          "403": { "description": "Apenas administradores podem deletar usuários." },
+          "404": { "description": "Usuário não encontrado." }
         }
       }
     }

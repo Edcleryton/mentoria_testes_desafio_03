@@ -1,6 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const userService = require('../services/userService');
+const jwt = require('jsonwebtoken');
+
+// Middleware para autenticação JWT
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Token não fornecido.' });
+  jwt.verify(token, 'secreta_super_segura', (err, decoded) => {
+    if (err) return res.status(403).json({ message: 'Token inválido.' });
+    // Garante que role está atualizado (caso o usuário tenha sido alterado)
+    const user = userService.getUser(decoded.username);
+    if (!user) return res.status(403).json({ message: 'Usuário não encontrado.' });
+    req.user = { username: user.username, role: user.role };
+    next();
+  });
+}
 
 /**
  * @swagger
@@ -107,5 +124,40 @@ router.post('/remember-password', userController.rememberPassword);
  *         description: Internal Server Error. Ocorreu um erro inesperado no servidor.
  */
 router.post('/register', userController.register);
+
+/**
+ * @swagger
+ * /user:
+ *   patch:
+ *     summary: Atualiza dados do usuário autenticado
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 minLength: 12
+ *                 maxLength: 16
+ *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\-=[\\]{};':\\\"|,.<>/?]).{12,16}$'
+ *     responses:
+ *       '200':
+ *         description: Usuário atualizado com sucesso.
+ *       '400':
+ *         description: Dados inválidos.
+ *       '401':
+ *         description: Token não fornecido.
+ *       '403':
+ *         description: Token inválido.
+ *       '404':
+ *         description: Usuário não encontrado.
+ */
+router.patch('/user', authenticateToken, userController.updateUser);
+router.patch('/admin/user', authenticateToken, userController.updateUserByAdmin);
+router.delete('/user', authenticateToken, userController.deleteUser);
 
 module.exports = router; 
