@@ -156,7 +156,7 @@
             "application/json": {
               "schema": { "$ref": "#/components/schemas/LoginRequest" },
               "example": {
-                "username": "novoUsuario",
+                "username": "novoUsuario@email.com",
                 "password": "senhaForte123!"
               }
             }

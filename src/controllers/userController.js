@@ -61,7 +61,7 @@ exports.register = (req, res) => {
     return res.status(400).json({ message: 'Username (e-mail) e senha são obrigatórios.' });
   }
   if (!isValidEmail(username)) {
-    return res.status(400).json({ message: 'E-mail inválido.' });
+    return res.status(400).json({ message: 'Username (e-mail) inválido.' });
   }
   if (!isStrongPassword(password)) {
     return res.status(400).json({ message: 'A senha deve ter entre 12 e 16 caracteres, conter maiúsculas, minúsculas, números e caractere especial.' });
