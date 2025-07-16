@@ -14,26 +14,26 @@ function isStrongPassword(password) {
 exports.login = (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ message: 'Username e senha são obrigatórios.' });
+    return res.status(400).json({ message: 'Username e senha são obrigatórios.', success: false });
   }
   // Simulação de usuário proibido
   if (username === 'forbidden') {
-    return res.status(403).json({ message: 'Usuário não tem permissão para acessar este recurso.' });
+    return res.status(403).json({ message: 'Usuário não tem permissão para acessar este recurso.', success: false });
   }
   // Simulação de resposta parcial
   if (username === 'partial') {
-    return res.status(203).json({ message: 'Login realizado, mas informações parciais retornadas.' });
+    return res.status(203).json({ message: 'Login realizado, mas informações parciais retornadas.', success: true });
   }
   const result = userService.login(username, password);
   if (result.status === 'blocked') {
-    return res.status(429).json({ message: 'Usuário bloqueado por excesso de tentativas.' });
+    return res.status(429).json({ message: 'Usuário bloqueado por excesso de tentativas.', success: false });
   }
   if (result.status === 'success') {
     // Geração do token JWT com role
     const token = jwt.sign({ username, role: result.user.role }, 'secreta_super_segura', { expiresIn: '1h' });
-    return res.status(201).json({ message: 'Login realizado com sucesso. Sessão criada.', token });
+    return res.status(201).json({ message: 'Login realizado com sucesso. Sessão criada.', token, success: true });
   }
-  return res.status(401).json({ message: 'Usuário ou senha inválidos.' });
+  return res.status(401).json({ message: 'Usuário ou senha inválidos.', success: false });
 };
 
 exports.rememberPassword = (req, res) => {
