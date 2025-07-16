@@ -21,9 +21,9 @@
     "schemas": {
       "LoginRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": ["username", "password"],
         "properties": {
-          "email": {
+          "username": {
             "type": "string",
             "format": "email",
             "example": "usuario@email.com"
@@ -39,9 +39,9 @@
       },
       "RememberPasswordRequest": {
         "type": "object",
-        "required": ["email"],
+        "required": ["username"],
         "properties": {
-          "email": {
+          "username": {
             "type": "string",
             "format": "email",
             "example": "usuario@email.com"
