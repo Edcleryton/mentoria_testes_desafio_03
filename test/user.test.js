@@ -3,7 +3,6 @@ const express = require('express');
 const userRoutes = require('../routes/userRoutes');
 const userService = require('../services/userService');
 
-=======
 const app = express();
 app.use(express.json());
 app.use('/', userRoutes);
@@ -16,7 +15,7 @@ describe('API Login de Usuários', () => {
   it('Login com sucesso (201)', async () => {
     const res = await request(app)
       .post('/login')
-      .send({ username: 'admin', password: '123456' });
+      .send({ username: 'admin@email.com', password: 'Admin123456!' });
     res.status.should.equal(201);
     res.body.message.should.equal('Login realizado com sucesso. Sessão criada.');
   });
@@ -30,14 +29,14 @@ describe('API Login de Usuários', () => {
   });
 
   it('Bloquear senha após 3 tentativas (429)', async () => {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i <= 2; i++) {
       await request(app)
         .post('/login')
-        .send({ username: 'user', password: 'errada' });
+        .send({ username: 'user@email.com', password: 'errada' });
     }
     const res = await request(app)
       .post('/login')
-      .send({ username: 'user', password: 'errada' });
+      .send({ username: 'user@email.com', password: 'errada' });
     res.status.should.equal(429);
     res.body.message.should.equal('Usuário bloqueado por excesso de tentativas.');
   });
@@ -45,7 +44,7 @@ describe('API Login de Usuários', () => {
   it('Lembrar senha (201)', async () => {
     const res = await request(app)
       .post('/remember-password')
-      .send({ username: 'admin' });
+      .send({ username: 'admin@email.com' });
     res.status.should.equal(201);
     res.body.message.should.equal('Instruções de recuperação enviadas. Solicitação criada.');
   });
