@@ -11,12 +11,19 @@
     }
   ],
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "LoginRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": ["username", "password"],
         "properties": {
-          "email": {
+          "username": {
             "type": "string",
             "format": "email",
             "example": "usuario@email.com"
@@ -32,9 +39,9 @@
       },
       "RememberPasswordRequest": {
         "type": "object",
-        "required": ["email"],
+        "required": ["username"],
         "properties": {
-          "email": {
+          "username": {
             "type": "string",
             "format": "email",
             "example": "usuario@email.com"
@@ -46,7 +53,9 @@
         "properties": {
           "error": { "type": "string", "example": "Mensagem de erro descritiva." }
         }
-      }
+      },
+      "LoginSuccessResponse": { "type": "object", "properties": { "message": {"type": "string"}, "token": {"type": "string"}, "success": {"type": "boolean"} }, "example": { "message": "Login realizado com sucesso. Sessão criada.", "token": "<jwt_token>", "success": true } },
+      "LoginErrorResponse": { "type": "object", "properties": { "message": {"type": "string"}, "success": {"type": "boolean"} }, "example": { "message": "Usuário ou senha inválidos.", "success": false } }
     },
     "responses": {
       "InternalServerError": {
@@ -109,13 +118,69 @@
           }
         },
         "responses": {
-          "200": { "description": "OK. Login bem-sucedido." },
-          "201": { "description": "Created. Login realizado e sessão criada (caso aplicável)." },
-          "203": { "description": "Non-Authoritative Information. Login realizado, mas informações retornadas podem ser parciais." },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "429": { "description": "Too Many Requests. Conta bloqueada temporariamente por múltiplas tentativas." },
+          "200": {
+            "description": "OK. Login bem-sucedido.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginSuccessResponse" },
+                "example": { "message": "Login realizado com sucesso. Sessão criada.", "token": "<jwt_token>", "success": true }
+              }
+            }
+          },
+          "201": {
+            "description": "Created. Login realizado e sessão criada (caso aplicável).",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginSuccessResponse" },
+                "example": { "message": "Login realizado com sucesso. Sessão criada.", "token": "<jwt_token>", "success": true }
+              }
+            }
+          },
+          "203": {
+            "description": "Non-Authoritative Information. Login realizado, mas informações retornadas podem ser parciais.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginSuccessResponse" },
+                "example": { "message": "Login realizado, mas informações parciais retornadas.", "success": true }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. A requisição está mal formatada ou faltam campos obrigatórios (username/senha).",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginErrorResponse" },
+                "example": { "message": "Username e senha são obrigatórios.", "success": false }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. As credenciais fornecidas (username ou senha) estão incorretas.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginErrorResponse" },
+                "example": { "message": "Usuário ou senha inválidos.", "success": false }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. O usuário está ativo, mas não tem permissão para acessar o recurso (caso aplicável).",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginErrorResponse" },
+                "example": { "message": "Usuário não tem permissão para acessar este recurso.", "success": false }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests. A conta foi bloqueada temporariamente devido a múltiplas tentativas de login falhas.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginErrorResponse" },
+                "example": { "message": "Usuário bloqueado por excesso de tentativas.", "success": false }
+              }
+            }
+          },
           "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
@@ -166,6 +231,62 @@
           "201": { "description": "Created. Usuário cadastrado com sucesso." },
           "400": { "$ref": "#/components/responses/BadRequest" },
           "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/admin/user": {
+      "patch": {
+        "summary": "Admin: Atualiza nome ou senha de qualquer usuário",
+        "security": [ { "bearerAuth": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 12, "maxLength": 16 },
+                  "newUsername": { "type": "string", "format": "email" }
+                },
+                "required": ["username"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuário atualizado com sucesso." },
+          "400": { "description": "Dados inválidos." },
+          "401": { "description": "Token não fornecido." },
+          "403": { "description": "Apenas administradores podem alterar outros usuários." },
+          "404": { "description": "Usuário não encontrado." }
+        }
+      }
+    },
+    "/user": {
+      "delete": {
+        "summary": "Admin: Deleta usuário",
+        "security": [ { "bearerAuth": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "format": "email" }
+                },
+                "required": ["username"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuário deletado com sucesso." },
+          "400": { "description": "Username do usuário a ser deletado é obrigatório." },
+          "401": { "description": "Token não fornecido." },
+          "403": { "description": "Apenas administradores podem deletar usuários." },
+          "404": { "description": "Usuário não encontrado." }
         }
       }
     }
