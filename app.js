@@ -4,7 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
 const swaggerJsdoc = require('swagger-jsdoc');
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 app.use(express.json());
@@ -40,7 +40,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Erro interno do servidor.' });
 });
 
-=======
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
