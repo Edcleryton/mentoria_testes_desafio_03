@@ -102,8 +102,8 @@
             "application/json": {
               "schema": { "$ref": "#/components/schemas/LoginRequest" },
               "example": {
-                "username": "usuario123",
-                "password": "senhaSegura!"
+                "username": "user@email.com",
+                "password": "User12345678!"
               }
             }
           }
@@ -130,7 +130,7 @@
             "application/json": {
               "schema": { "$ref": "#/components/schemas/RememberPasswordRequest" },
               "example": {
-                "username": "usuario123"
+                "username": "user@email.com"
               }
             }
           }
@@ -157,7 +157,7 @@
               "schema": { "$ref": "#/components/schemas/LoginRequest" },
               "example": {
                 "username": "novoUsuario",
-                "password": "senhaForte123"
+                "password": "senhaForte123!"
               }
             }
           }

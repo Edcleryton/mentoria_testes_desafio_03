@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
-const userRoutes = require('../routes/userRoutes');
-const userService = require('../services/userService');
+const userRoutes = require('../src/routes/userRoutes');
+const userService = require('../src/services/userService');
 
 const app = express();
 app.use(express.json());
@@ -106,11 +106,46 @@ describe('API Login de Usuários', () => {
   });
 });
 
+describe('/register', () => {
+  beforeEach(() => {
+    userService._reset && userService._reset();
+  });
+
+  it('Cadastro com sucesso (201)', async () => {
+    const res = await request(app)
+      .post('/register')
+      .send({ username: 'novo@email.com', password: 'SenhaForte123!' });
+    res.status.should.equal(201);
+    res.body.message.should.equal('Usuário cadastrado com sucesso.');
+  });
+
+  it('Cadastro com email já existente (400)', async () => {
+    // First registration
+    await request(app)
+      .post('/register')
+      .send({ username: 'existente@email.com', password: 'SenhaForte123!' });
+    // Try again
+    const res = await request(app)
+      .post('/register')
+      .send({ username: 'existente@email.com', password: 'SenhaForte123!' });
+    res.status.should.equal(400);
+    res.body.message.should.match(/já existe/i);
+  });
+
+  it('Cadastro com senha fraca (400)', async () => {
+    const res = await request(app)
+      .post('/register')
+      .send({ username: 'fraco@email.com', password: '123' });
+    res.status.should.equal(400);
+    res.body.message.should.match(/senha/i);
+  });
+});
+
 const chai = require('chai');
 global.should = chai.should();
 
 userService._reset = function() {
-  const users = require('../services/userService').__getUsers && require('../services/userService').__getUsers();
+  const users = require('../src/services/userService').__getUsers && require('../src/services/userService').__getUsers();
   if (users) {
     users.forEach(u => {
       u.attempts = 0;

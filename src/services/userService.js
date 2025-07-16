@@ -1,16 +1,16 @@
 // Usuários de exemplo em memória
 const users = [
 
-  { email: 'admin@email.com', password: 'Admin123456!', blocked: false, attempts: 0 },
-  { email: 'user@email.com', password: 'User12345678!', blocked: false, attempts: 0 }
+  { username: 'admin@email.com', password: 'Admin123456!', blocked: false, attempts: 0 },
+  { username: 'user@email.com', password: 'User12345678!', blocked: false, attempts: 0 }
 ];
 
-function findUser(email) {
-  return users.find(u => u.email === email);
+function findUser(username) {
+  return users.find(u => u.username === username);
 }
 
-exports.login = (email, password) => {
-  const user = findUser(email);
+exports.login = (username, password) => {
+  const user = findUser(username);
 
   if (!user) return { status: 'invalid' };
   if (user.blocked) return { status: 'blocked' };
@@ -27,19 +27,19 @@ exports.login = (email, password) => {
   }
 };
 
-exports.register = (email, password) => {
-  if (!email || !password) {
+exports.register = (username, password) => {
+  if (!username || !password) {
     return { status: 'invalid' };
   }
-  if (findUser(email)) {
+  if (findUser(username)) {
     return { status: 'exists' };
   }
-  users.push({ email, password, blocked: false, attempts: 0 });
+  users.push({ username, password, blocked: false, attempts: 0 });
   return { status: 'created' };
 };
 
-exports.rememberPassword = (email) => {
-  const user = findUser(email);
+exports.rememberPassword = (username) => {
+  const user = findUser(username);
 
   if (!user) return { status: 'not_found' };
   // Simula envio de instrução de recuperação

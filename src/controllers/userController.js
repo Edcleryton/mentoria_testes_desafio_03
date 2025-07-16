@@ -1,4 +1,4 @@
-const userService = require('../../services/userService');
+const userService = require('../services/userService');
 
 function isValidEmail(email) {
   // Regex simples para validar email
@@ -11,19 +11,19 @@ function isStrongPassword(password) {
 }
 
 exports.login = (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username e senha são obrigatórios.' });
   }
   // Simulação de usuário proibido
-  if (email === 'forbidden@email.com') {
+  if (username === 'forbidden') {
     return res.status(403).json({ message: 'Usuário não tem permissão para acessar este recurso.' });
   }
   // Simulação de resposta parcial
-  if (email === 'partial@email.com') {
+  if (username === 'partial') {
     return res.status(203).json({ message: 'Login realizado, mas informações parciais retornadas.' });
   }
-  const result = userService.login(email, password);
+  const result = userService.login(username, password);
   if (result.status === 'blocked') {
     return res.status(429).json({ message: 'Usuário bloqueado por excesso de tentativas.' });
   }
@@ -35,19 +35,19 @@ exports.login = (req, res) => {
 };
 
 exports.rememberPassword = (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: 'Email é obrigatório.' });
+  const { username } = req.body;
+  if (!username) {
+    return res.status(400).json({ message: 'Username é obrigatório.' });
   }
   // Simulação de usuário proibido
-  if (email === 'forbidden@email.com') {
+  if (username === 'forbidden') {
     return res.status(403).json({ message: 'Usuário não tem permissão para solicitar recuperação de senha.' });
   }
   // Simulação de resposta parcial
-  if (email === 'partial@email.com') {
+  if (username === 'partial') {
     return res.status(203).json({ message: 'Solicitação processada, mas informações parciais retornadas.' });
   }
-  const result = userService.rememberPassword(email);
+  const result = userService.rememberPassword(username);
   if (result.status === 'not_found') {
     return res.status(404).json({ message: 'Usuário não encontrado.' });
   }
@@ -56,17 +56,17 @@ exports.rememberPassword = (req, res) => {
 };
 
 exports.register = (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username (e-mail) e senha são obrigatórios.' });
   }
-  if (!isValidEmail(email)) {
-    return res.status(400).json({ message: 'Email inválido.' });
+  if (!isValidEmail(username)) {
+    return res.status(400).json({ message: 'E-mail inválido.' });
   }
   if (!isStrongPassword(password)) {
     return res.status(400).json({ message: 'A senha deve ter entre 12 e 16 caracteres, conter maiúsculas, minúsculas, números e caractere especial.' });
   }
-  const result = userService.register(email, password);
+  const result = userService.register(username, password);
   if (result.status === 'exists') {
     return res.status(400).json({ message: 'Usuário já existe.' });
   }
