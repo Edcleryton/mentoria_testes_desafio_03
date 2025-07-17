@@ -216,6 +216,3 @@ Content-Type: application/json
 
 Este projeto está licenciado sob a licença MIT.
 
-## Contato
-
-Dúvidas ou sugestões? Entre em contato pelo e-mail: seu@email.com 
