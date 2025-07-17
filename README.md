@@ -1,5 +1,23 @@
 # API de Login de Usuários
 
+![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-green)
+![Express](https://img.shields.io/badge/express-%5E4.18.2-blue)
+![Mocha](https://img.shields.io/badge/tested%20with-mocha-yellow)
+
+## Sumário
+
+- [Pré-requisitos](#pré-requisitos)
+- [Como baixar e instalar o projeto](#como-baixar-e-instalar-o-projeto)
+- [Como rodar os testes](#como-rodar-os-testes)
+- [Estrutura de Pastas e Explicação](#estrutura-de-pastas-e-explicação)
+- [Usuários de exemplo](#usuários-de-exemplo)
+- [Autenticação](#autenticação)
+- [Exemplos de Requisições](#exemplos-de-requisições)
+- [Dependências principais](#dependências-principais)
+- [Observações](#observações)
+- [Licença](#licença)
+- [Contato](#contato)
+
 ## Histórico de Alterações
 
 - Implementação de autenticação JWT (Bearer Token) para todos os endpoints protegidos.
@@ -20,43 +38,40 @@ A documentação interativa da API está disponível em:
 
 Basta iniciar a aplicação e acessar esse link no navegador para visualizar e testar todos os endpoints da API.
 
-## Instalação
-```bash
-cd mentoria_testes_desafio_03
-npm install
-```
+## Pré-requisitos
 
-## Estrutura de Pastas
+- [Node.js](https://nodejs.org/) (versão 14 ou superior)
+- [npm](https://www.npmjs.com/) (geralmente já vem com o Node.js)
+- Git (opcional, para clonar o repositório)
 
-```
-/
-├── app.js
-├── package.json
-├── package-lock.json
-├── README.md
-├── routes/
-│   └── userRoutes.js
-├── services/
-│   └── userService.js
-├── controllers/
-│   └── userController.js
-├── test/
-│   └── user.test.js
-├── swagger.json
-```
+## Como baixar e instalar o projeto
 
-## Como rodar o projeto
+1. **Clone o repositório (ou baixe o ZIP):**
+   ```bash
+   git clone https://github.com/seu-usuario/mentoria_testes_desafio_03.git
+   cd mentoria_testes_desafio_03
+   ```
+   > Se preferir, baixe o projeto como ZIP pelo GitHub e extraia em uma pasta.
 
-1. Instale as dependências:
+2. **Instale as dependências:**
    ```bash
    npm install
    ```
-2. Inicie a aplicação:
+
+3. **(Opcional) Defina a porta da aplicação:**
+   - Por padrão, a API roda na porta 3000. Para mudar, defina a variável de ambiente `PORT`:
+     ```bash
+     export PORT=4000 # Linux/Mac
+     set PORT=4000    # Windows
+     ```
+
+4. **Inicie a aplicação:**
    ```bash
    node app.js
    ```
-3. Acesse a documentação:
-   - [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
+5. **Acesse a documentação Swagger:**
+   - [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (ou a porta que você definiu)
 
 ## Como rodar os testes
 
@@ -171,4 +186,36 @@ Content-Type: application/json
 - Apenas administradores podem alterar ou deletar outros usuários.
 - **Nunca exponha senhas reais em código ou documentação em ambientes de produção!**
 
---- 
+## Estrutura de Pastas e Explicação
+
+```
+/
+├── app.js                 # Arquivo principal da aplicação Express
+├── package.json           # Gerenciador de dependências e scripts
+├── package-lock.json      # Controle de versões das dependências
+├── README.md              # Documentação do projeto
+├── routes/
+│   └── userRoutes.js      # Rotas relacionadas a usuários
+├── services/
+│   └── userService.js     # Lógica de negócio dos usuários
+├── controllers/
+│   └── userController.js  # Controladores das rotas de usuário
+├── test/
+│   └── user.test.js       # Testes automatizados
+├── swagger.json           # Documentação Swagger da API
+```
+
+- **app.js**: Ponto de entrada da aplicação.
+- **routes/**: Define as rotas da API.
+- **controllers/**: Controla as requisições e respostas das rotas.
+- **services/**: Contém a lógica de negócio.
+- **test/**: Testes automatizados.
+- **swagger.json**: Documentação da API.
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT.
+
+## Contato
+
+Dúvidas ou sugestões? Entre em contato pelo e-mail: seu@email.com 
