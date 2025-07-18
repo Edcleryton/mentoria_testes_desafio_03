@@ -31,6 +31,7 @@ describe("API Login de Usuários", () => {
       .send({ username: "admin", password: "errada" });
     expect(res.status).to.equal(401);
     expect(res.body.message).to.equal("Usuário ou senha inválidos.");
+
   });
 
   it("Bloquear senha após 3 tentativas (429)", async () => {
@@ -116,5 +117,6 @@ describe("API Login de Usuários", () => {
     const res = await request(app).post("/remember-password").send({});
     res.status.should.equal(400);
     res.body.message.should.equal("Username é obrigatório.");
+
   });
 });

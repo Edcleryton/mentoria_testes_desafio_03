@@ -62,5 +62,6 @@ describe("Funcionalidades de Usuário Comum", () => {
       .send({ username: "fraco@email.com", password: "123" });
     res.status.should.equal(400);
     res.body.message.should.match(/senha/i);
+
   });
 });

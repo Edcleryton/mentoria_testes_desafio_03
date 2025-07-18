@@ -47,6 +47,7 @@ describe("Permissão de Usuário Comum em Endpoints de Admin", () => {
       .send({ username: "admin@email.com", password: "Senha123456!" });
     res.status.should.equal(401);
     res.body.message.should.equal("Token não fornecido.");
+
   });
 
   it("Usuário comum não pode deletar usuário (token válido)", async () => {
@@ -77,5 +78,6 @@ describe("Permissão de Usuário Comum em Endpoints de Admin", () => {
       .send({ username: "admin@email.com" });
     res.status.should.equal(401);
     res.body.message.should.equal("Token não fornecido.");
+
   });
 });

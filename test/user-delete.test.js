@@ -16,6 +16,7 @@ describe("DELETE /admin/user (admin e permissões)", () => {
   beforeEach(async () => {
     userService._reset && userService._reset();
     // Login como admin
+
     const resAdmin = await request(app)
       .post("/login")
       .send({ username: "admin@email.com", password: "Admin123456!" });
@@ -25,6 +26,7 @@ describe("DELETE /admin/user (admin e permissões)", () => {
       .post("/login")
       .send({ username: "user@email.com", password: "User12345678!" });
     userToken = resUser.body.token;
+
   });
 
   it("Admin deleta usuário com sucesso", async () => {
@@ -84,5 +86,6 @@ describe("DELETE /admin/user (admin e permissões)", () => {
     expect(res.body.message).to.match(
       /Username do usuário a ser deletado é obrigatório/,
     );
+
   });
 });

@@ -43,6 +43,7 @@ describe("Alteração de senha do Usuário Comum", () => {
       .send({ password: "NovaSenha12345!" });
     res.status.should.equal(403);
     res.body.message.should.equal("Token inválido.");
+
   });
 
   it("Falha ao alterar senha fraca (400)", async () => {
@@ -56,5 +57,6 @@ describe("Alteração de senha do Usuário Comum", () => {
       .send({ password: "fraca" });
     res.status.should.equal(400);
     res.body.message.should.match(/A senha deve ter entre 12 e 16 caracteres/);
+
   });
 });
