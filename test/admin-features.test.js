@@ -29,44 +29,44 @@ describe('Funcionalidades de Administrador', () => {
 
   it('Admin altera senha de outro usuário com sucesso', async () => {
     await request(app)
-      .patch('/admin/user')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com', newUsername: 'user@email.com' });
+      .post('/register')
+      .send({ username: 'admin-teste1@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
       .patch('/admin/user')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com', password: 'NovaSenhaAdm123!' });
+      .send({ username: 'admin-teste1@email.com', password: 'NovaSenhaAdm123!' });
     resposta.status.should.equal(200);
     resposta.body.message.should.equal('Usuário atualizado com sucesso.');
   });
 
   it('Admin altera nome de outro usuário com sucesso', async () => {
     await request(app)
-      .patch('/admin/user')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com', newUsername: 'user@email.com' });
+      .post('/register')
+      .send({ username: 'admin-teste2@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
       .patch('/admin/user')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com', newUsername: 'novo.user@email.com' });
+      .send({ username: 'admin-teste2@email.com', newUsername: 'novo.admin-teste2@email.com' });
     resposta.status.should.equal(200);
     resposta.body.message.should.equal('Usuário atualizado com sucesso.');
     await request(app)
       .patch('/admin/user')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'novo.user@email.com', newUsername: 'user@email.com' });
+      .send({ username: 'novo.admin-teste2@email.com', newUsername: 'admin-teste2@email.com' });
   });
 
   it('Usuário comum não pode alterar outro usuário (token válido)', async () => {
-    // Gera token válido do usuário comum imediatamente antes do teste
+    await request(app)
+      .post('/register')
+      .send({ username: 'admin-teste3@email.com', password: 'SenhaForte123!' });
     const respostaUser = await request(app)
       .post('/login')
-      .send({ username: 'user@email.com', password: 'User12345678!' });
+      .send({ username: 'admin-teste3@email.com', password: 'SenhaForte123!' });
     const userToken = respostaUser.body.token;
     const resposta = await request(app)
       .patch('/admin/user')
       .set('Authorization', `Bearer ${userToken}`)
-      .send({ username: 'admin@email.com', password: 'Senha123456!' });
+      .send({ username: 'admin@email.com', password: 'Admin123456!' });
     resposta.status.should.equal(403);
     resposta.body.message.should.match(/Apenas administradores/);
   });
@@ -90,22 +90,23 @@ describe('Funcionalidades de Administrador', () => {
 
   it('Admin deleta usuário com sucesso', async () => {
     await request(app)
-      .patch('/admin/user')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com', newUsername: 'user@email.com' });
+      .post('/register')
+      .send({ username: 'admin-teste4@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
       .delete('/user')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ username: 'user@email.com' });
+      .send({ username: 'admin-teste4@email.com' });
     resposta.status.should.equal(200);
     resposta.body.message.should.equal('Usuário deletado com sucesso.');
   });
 
   it('Usuário comum não pode deletar usuário (token válido)', async () => {
-    // Gera token válido do usuário comum imediatamente antes do teste
+    await request(app)
+      .post('/register')
+      .send({ username: 'admin-teste5@email.com', password: 'SenhaForte123!' });
     const respostaUser = await request(app)
       .post('/login')
-      .send({ username: 'user@email.com', password: 'User12345678!' });
+      .send({ username: 'admin-teste5@email.com', password: 'SenhaForte123!' });
     const userToken = respostaUser.body.token;
     const resposta = await request(app)
       .delete('/user')

@@ -187,6 +187,7 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 - jsonwebtoken
 - mocha (testes)
 - supertest (testes)
+- chai (testes)
 
 ## Observações
 - O arquivo `swagger.json` contém toda a documentação da API.
@@ -194,6 +195,7 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 - O cadastro exige email válido e senha forte (12-16 caracteres, maiúscula, minúscula, número e caractere especial).
 - Apenas administradores podem alterar ou deletar outros usuários.
 - **Nunca exponha senhas reais em código ou documentação em ambientes de produção!**
+- Todos os testes são isolados: cada teste cria seus próprios usuários quando necessário e o estado é resetado antes de cada execução.
 
 ## Estrutura de Pastas e Explicação
 
@@ -210,7 +212,12 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 ├── controllers/
 │   └── userController.js  # Controladores das rotas de usuário
 ├── test/
-│   └── user.test.js       # Testes automatizados
+│   ├── login.test.js
+│   ├── user-features.test.js
+│   ├── user-password-update.test.js
+│   ├── user-permission.test.js
+│   ├── admin-features.test.js
+│   └── user-delete.test.js
 ├── swagger.json           # Documentação Swagger da API
 ```
 
