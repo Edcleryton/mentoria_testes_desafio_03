@@ -10,126 +10,47 @@ const app = express();
 app.use(express.json());
 app.use("/", userRoutes);
 
-describe("Permissão de Usuário Comum em Endpoints de Admin", () => {
-  beforeEach(() => {
+describe("Permissões de Usuário Comum", () => {
+  let userToken;
+  beforeEach(async () => {
     userService._reset && userService._reset();
-  });
-
-<<<<<<< HEAD
-  it('Usuário comum não pode alterar outro usuário (token válido)', async () => {
-    // Cria usuário isolado
-    await request(app)
-      .post('/register')
-      .send({ username: 'isolado1@email.com', password: 'SenhaForte123!' });
-    const respostaUser = await request(app)
-      .post('/login')
-      .send({ username: 'isolado1@email.com', password: 'SenhaForte123!' });
-    const userToken = respostaUser.body.token;
-    const resposta = await request(app)
-      .patch('/admin/user')
-      .set('Authorization', `Bearer ${userToken}`)
-      .send({ username: 'admin@email.com', password: 'Admin123456!' });
-    resposta.status.should.equal(403);
-    resposta.body.message.should.match(/Apenas administradores/);
-  });
-
-  it('Usuário comum não pode alterar outro usuário (token inválido)', async () => {
-    const resposta = await request(app)
-      .patch('/admin/user')
-      .set('Authorization', 'Bearer tokeninvalido')
-      .send({ username: 'admin@email.com', password: 'Admin123456!' });
-    resposta.status.should.equal(403);
-    resposta.body.message.should.equal('Token inválido.');
-  });
-
-  it('Usuário comum não pode alterar outro usuário (sem token)', async () => {
-    const resposta = await request(app)
-      .patch('/admin/user')
-      .send({ username: 'admin@email.com', password: 'Admin123456!' });
-    resposta.status.should.equal(401);
-    resposta.body.message.should.equal('Token não fornecido.');
-  });
-
-  it('Usuário comum não pode deletar usuário (token válido)', async () => {
-    // Cria usuário isolado
-    await request(app)
-      .post('/register')
-      .send({ username: 'isolado2@email.com', password: 'SenhaForte123!' });
-    const respostaUser = await request(app)
-      .post('/login')
-      .send({ username: 'isolado2@email.com', password: 'SenhaForte123!' });
-    const userToken = respostaUser.body.token;
-    const resposta = await request(app)
-      .delete('/user')
-      .set('Authorization', `Bearer ${userToken}`)
-      .send({ username: 'admin@email.com' });
-    resposta.status.should.equal(403);
-    resposta.body.message.should.match(/Apenas administradores/);
-=======
-  it("Usuário comum não pode alterar outro usuário (token válido)", async () => {
-    // Garante que o usuário existe e o token é válido
-    await request(app)
-      .post("/register")
-      .send({ username: "user@email.com", password: "User12345678!" });
+    // Login como usuário comum
     const resUser = await request(app)
       .post("/login")
       .send({ username: "user@email.com", password: "User12345678!" });
-    const userToken = resUser.body.token;
+    userToken = resUser.body.token;
+  });
+
+  it("Usuário comum não pode acessar lista de usuários de admin", async () => {
     const res = await request(app)
-      .patch("/admin/user")
-      .set("Authorization", `Bearer ${userToken}`)
-      .send({ username: "admin@email.com", password: "Senha123456!" });
+      .get("/admin/users")
+      .set("Authorization", `Bearer ${userToken}`);
     res.status.should.equal(403);
     res.body.message.should.match(/Apenas administradores/);
   });
 
-  it("Usuário comum não pode alterar outro usuário (token inválido)", async () => {
+  it("Usuário comum não pode alterar outro usuário", async () => {
     const res = await request(app)
       .patch("/admin/user")
-      .set("Authorization", "Bearer tokeninvalido")
-      .send({ username: "admin@email.com", password: "Senha123456!" });
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ username: "admin@email.com", password: "Admin123456!" });
     res.status.should.equal(403);
-    res.body.message.should.equal("Token inválido.");
+    res.body.message.should.match(/Apenas administradores/);
   });
 
-  it("Usuário comum não pode alterar outro usuário (sem token)", async () => {
+  it("Usuário comum não pode deletar outro usuário", async () => {
     const res = await request(app)
-      .patch("/admin/user")
-      .send({ username: "admin@email.com", password: "Senha123456!" });
-    res.status.should.equal(401);
-    res.body.message.should.equal("Token não fornecido.");
-
-  });
-
-  it("Usuário comum não pode deletar usuário (token válido)", async () => {
-    const resUser = await request(app)
-      .post("/login")
-      .send({ username: "user@email.com", password: "User12345678!" });
-    const userToken = resUser.body.token;
-    const res = await request(app)
-      .delete("/user")
+      .delete("/admin/user")
       .set("Authorization", `Bearer ${userToken}`)
       .send({ username: "admin@email.com" });
     res.status.should.equal(403);
     res.body.message.should.match(/Apenas administradores/);
->>>>>>> 635008672e27d2f4acda356fe44c8cf5cf38c8f3
   });
 
-  it("Usuário comum não pode deletar usuário (token inválido)", async () => {
+  it("Usuário comum não pode acessar endpoints de admin sem token", async () => {
     const res = await request(app)
-      .delete("/user")
-      .set("Authorization", "Bearer tokeninvalido")
-      .send({ username: "admin@email.com" });
-    res.status.should.equal(403);
-    res.body.message.should.equal("Token inválido.");
-  });
-
-  it("Usuário comum não pode deletar usuário (sem token)", async () => {
-    const res = await request(app)
-      .delete("/user")
-      .send({ username: "admin@email.com" });
+      .get("/admin/users");
     res.status.should.equal(401);
-    res.body.message.should.equal("Token não fornecido.");
-
+    res.body.message.should.match(/Token não fornecido/);
   });
 });

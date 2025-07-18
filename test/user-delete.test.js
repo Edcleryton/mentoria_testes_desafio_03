@@ -88,4 +88,12 @@ describe("DELETE /admin/user (admin e permissões)", () => {
     );
 
   });
+
+  it("Não permite outros métodos em /admin/user", async () => {
+    const res = await request(app)
+      .put("/admin/user")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
 });

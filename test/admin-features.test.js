@@ -29,7 +29,6 @@ describe("Funcionalidades de Administrador", () => {
 
   it("Admin altera senha de outro usuário com sucesso", async () => {
     await request(app)
-<<<<<<< HEAD
       .post('/register')
       .send({ username: 'admin-teste1@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
@@ -38,22 +37,10 @@ describe("Funcionalidades de Administrador", () => {
       .send({ username: 'admin-teste1@email.com', password: 'NovaSenhaAdm123!' });
     resposta.status.should.equal(200);
     resposta.body.message.should.equal('Usuário atualizado com sucesso.');
-=======
-      .post("/register")
-      .send({ username: "userupdate@email.com", password: "User12345678!" });
-
-    const res = await request(app)
-      .patch("/admin/user")
-      .set("Authorization", `Bearer ${adminToken}`)
-      .send({ username: "userupdate@email.com", password: "NovaSenhaAdm123!" });
-    res.status.should.equal(200);
-    res.body.message.should.equal("Usuário atualizado com sucesso.");
->>>>>>> 635008672e27d2f4acda356fe44c8cf5cf38c8f3
   });
 
   it("Admin altera nome de outro usuário com sucesso", async () => {
     await request(app)
-<<<<<<< HEAD
       .post('/register')
       .send({ username: 'admin-teste2@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
@@ -82,17 +69,6 @@ describe("Funcionalidades de Administrador", () => {
       .send({ username: 'admin@email.com', password: 'Admin123456!' });
     resposta.status.should.equal(403);
     resposta.body.message.should.match(/Apenas administradores/);
-=======
-      .post("/register")
-      .send({ username: "userupdate2@email.com", password: "User12345678!" });
-
-   
-    const res = await request(app)
-      .patch("/admin/user")
-      .set("Authorization", `Bearer ${adminToken}`)
-      .send({ username: "userupdate2@email.com", newUsername: "udpateduser@email.com" });
-    res.status.should.equal(200);
-    res.body.message.should.equal("Usuário atualizado com sucesso.");
   });
 
   it("Usuário comum não pode alterar outro usuário (token válido)", async () => {
@@ -107,7 +83,6 @@ describe("Funcionalidades de Administrador", () => {
       .send({ username: "admin@email.com" });
     res.status.should.equal(403);
     res.body.message.should.match(/Apenas administradores/);
->>>>>>> 635008672e27d2f4acda356fe44c8cf5cf38c8f3
   });
 
   it("Usuário comum não pode alterar outro usuário (token inválido)", async () => {
@@ -167,15 +142,13 @@ describe("Funcionalidades de Administrador", () => {
   it("Usuário comum não pode deletar usuário (sem token)", async () => {
     // Garante que o usuário existe
     await request(app)
-<<<<<<< HEAD
       .post('/register')
       .send({ username: 'admin-teste4@email.com', password: 'SenhaForte123!' });
     const resposta = await request(app)
-      .delete('/user')
-      .set('Authorization', `Bearer ${adminToken}`)
+      .delete('/admin/user')
       .send({ username: 'admin-teste4@email.com' });
-    resposta.status.should.equal(200);
-    resposta.body.message.should.equal('Usuário deletado com sucesso.');
+    resposta.status.should.equal(401);
+    resposta.body.message.should.equal('Token não fornecido.');
   });
 
   it('Usuário comum não pode deletar usuário (token válido)', async () => {
@@ -187,22 +160,11 @@ describe("Funcionalidades de Administrador", () => {
       .send({ username: 'admin-teste5@email.com', password: 'SenhaForte123!' });
     const userToken = respostaUser.body.token;
     const resposta = await request(app)
-      .delete('/user')
+      .delete('/admin/user')
       .set('Authorization', `Bearer ${userToken}`)
       .send({ username: 'admin@email.com' });
     resposta.status.should.equal(403);
     resposta.body.message.should.match(/Apenas administradores/);
-=======
-      .post("/register")
-      .send({ username: "userteste@email.com", password: "User12345678!" });
-
-    // Tenta deletar sem enviar o token
-    const res = await request(app)
-      .delete("/admin/user")
-      .send({ username: "userteste@email.com" }); // ou qualquer outro usuário
-
-    res.status.should.equal(401);
-    res.body.message.should.equal("Token não fornecido.");
   });
 
   it("Admin tenta deletar usuário inexistente", async () => {
@@ -230,7 +192,6 @@ describe("GET /admin/users", () => {
       .post("/login")
       .send({ username: "user@email.com", password: "User12345678!" });
     userToken = resUser.body.token;
->>>>>>> 635008672e27d2f4acda356fe44c8cf5cf38c8f3
   });
 
   it("deve retornar a lista de usuários para admin autenticado", async () => {
@@ -255,6 +216,52 @@ describe("GET /admin/users", () => {
     const res = await request(app).get("/admin/users");
     res.status.should.equal(401);
     res.body.message.should.match(/Token não fornecido/);
+  });
+
+  it("Não permite GET em /admin/user", async () => {
+    const res = await request(app)
+      .get("/admin/user")
+      .set("Authorization", `Bearer ${adminToken}`);
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite POST em /admin/user", async () => {
+    const res = await request(app)
+      .post("/admin/user")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite PUT em /admin/user", async () => {
+    const res = await request(app)
+      .put("/admin/user")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite DELETE em /admin/users", async () => {
+    const res = await request(app)
+      .delete("/admin/users")
+      .set("Authorization", `Bearer ${adminToken}`);
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite POST em /admin/users", async () => {
+    const res = await request(app)
+      .post("/admin/users")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({});
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite PUT em /admin/users", async () => {
+    const res = await request(app)
+      .put("/admin/users")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({});
+    expect([404, 405]).to.include(res.status);
   });
 });
 

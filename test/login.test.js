@@ -119,4 +119,24 @@ describe("API Login de Usuários", () => {
     res.body.message.should.equal("Username é obrigatório.");
 
   });
+
+  it("Não permite GET em /remember-password", async () => {
+    const res = await request(app)
+      .get("/remember-password");
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite PUT em /remember-password", async () => {
+    const res = await request(app)
+      .put("/remember-password")
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite DELETE em /remember-password", async () => {
+    const res = await request(app)
+      .delete("/remember-password")
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
 });

@@ -64,4 +64,44 @@ describe("Funcionalidades de Usuário Comum", () => {
     res.body.message.should.match(/senha/i);
 
   });
+
+  it("Não permite GET em /register", async () => {
+    const res = await request(app)
+      .get("/register");
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite PUT em /register", async () => {
+    const res = await request(app)
+      .put("/register")
+      .send({ username: "alguem@email.com", password: "SenhaForte123!" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite DELETE em /register", async () => {
+    const res = await request(app)
+      .delete("/register")
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite GET em /login", async () => {
+    const res = await request(app)
+      .get("/login");
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite PUT em /login", async () => {
+    const res = await request(app)
+      .put("/login")
+      .send({ username: "alguem@email.com", password: "SenhaForte123!" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite DELETE em /login", async () => {
+    const res = await request(app)
+      .delete("/login")
+      .send({ username: "alguem@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
 });
