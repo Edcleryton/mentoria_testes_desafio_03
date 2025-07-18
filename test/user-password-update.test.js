@@ -20,29 +20,29 @@ describe('Alteração de senha do Usuário Comum', () => {
       .post('/login')
       .send({ username: 'user@email.com', password: 'User12345678!' });
     const token = login.body.token;
-    const res = await request(app)
+    const resposta = await request(app)
       .patch('/user')
       .set('Authorization', `Bearer ${token}`)
       .send({ password: 'NovaSenha12345!' });
-    res.status.should.equal(200);
-    res.body.message.should.equal('Usuário atualizado com sucesso.');
+    resposta.status.should.equal(200);
+    resposta.body.message.should.equal('Usuário atualizado com sucesso.');
   });
 
   it('Falha ao alterar senha sem token (401)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .patch('/user')
       .send({ password: 'NovaSenha12345!' });
-    res.status.should.equal(401);
-    res.body.message.should.equal('Token não fornecido.');
+    resposta.status.should.equal(401);
+    resposta.body.message.should.equal('Token não fornecido.');
   });
 
   it('Falha ao alterar senha com token inválido (403)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .patch('/user')
       .set('Authorization', 'Bearer tokeninvalido')
       .send({ password: 'NovaSenha12345!' });
-    res.status.should.equal(403);
-    res.body.message.should.equal('Token inválido.');
+    resposta.status.should.equal(403);
+    resposta.body.message.should.equal('Token inválido.');
   });
 
   it('Falha ao alterar senha fraca (400)', async () => {
@@ -50,11 +50,11 @@ describe('Alteração de senha do Usuário Comum', () => {
       .post('/login')
       .send({ username: 'user@email.com', password: 'User12345678!' });
     const token = login.body.token;
-    const res = await request(app)
+    const resposta = await request(app)
       .patch('/user')
       .set('Authorization', `Bearer ${token}`)
       .send({ password: 'fraca' });
-    res.status.should.equal(400);
-    res.body.message.should.match(/A senha deve ter entre 12 e 16 caracteres/);
+    resposta.status.should.equal(400);
+    resposta.body.message.should.match(/A senha deve ter entre 12 e 16 caracteres/);
   });
 }); 

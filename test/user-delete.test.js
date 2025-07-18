@@ -16,15 +16,15 @@ describe('DELETE /user (admin e permissões)', () => {
   beforeEach(async () => {
     userService._reset && userService._reset();
     // Login como admin
-    const resAdmin = await request(app)
+    const respostaAdmin = await request(app)
       .post('/login')
       .send({ username: 'admin@email.com', password: 'Admin123456!' });
-    adminToken = resAdmin.body.token;
+    adminToken = respostaAdmin.body.token;
     // Login como usuário comum
-    const resUser = await request(app)
+    const respostaUser = await request(app)
       .post('/login')
       .send({ username: 'user@email.com', password: 'User12345678!' });
-    userToken = resUser.body.token;
+    userToken = respostaUser.body.token;
   });
 
   it('Admin deleta usuário com sucesso', async () => {
@@ -32,55 +32,55 @@ describe('DELETE /user (admin e permissões)', () => {
     await request(app)
       .post('/register')
       .send({ username: 'novo@email.com', password: 'SenhaForte123!' });
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ username: 'novo@email.com' });
-    expect(res.status).to.equal(200);
-    expect(res.body.message).to.equal('Usuário deletado com sucesso.');
+    expect(resposta.status).to.equal(200);
+    expect(resposta.body.message).to.equal('Usuário deletado com sucesso.');
   });
 
   it('Admin tenta deletar usuário inexistente', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ username: 'naoexiste@email.com' });
-    expect(res.status).to.equal(404);
-    expect(res.body.message).to.equal('Usuário não encontrado.');
+    expect(resposta.status).to.equal(404);
+    expect(resposta.body.message).to.equal('Usuário não encontrado.');
   });
 
   it('Usuário comum não pode deletar usuário', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .set('Authorization', `Bearer ${userToken}`)
       .send({ username: 'admin@email.com' });
-    expect(res.status).to.equal(403);
-    expect(res.body.message).to.match(/Apenas administradores/);
+    expect(resposta.status).to.equal(403);
+    expect(resposta.body.message).to.match(/Apenas administradores/);
   });
 
   it('Falha ao deletar usuário com token inválido', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .set('Authorization', 'Bearer tokeninvalido')
       .send({ username: 'admin@email.com' });
-    expect(res.status).to.equal(403);
-    expect(res.body.message).to.equal('Token inválido.');
+    expect(resposta.status).to.equal(403);
+    expect(resposta.body.message).to.equal('Token inválido.');
   });
 
   it('Falha ao deletar usuário sem token', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .send({ username: 'admin@email.com' });
-    expect(res.status).to.equal(401);
-    expect(res.body.message).to.equal('Token não fornecido.');
+    expect(resposta.status).to.equal(401);
+    expect(resposta.body.message).to.equal('Token não fornecido.');
   });
 
   it('Falha ao deletar usuário sem informar username', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .delete('/user')
       .set('Authorization', `Bearer ${adminToken}`)
       .send({});
-    expect(res.status).to.equal(400);
-    expect(res.body.message).to.match(/Username do usuário a ser deletado é obrigatório/);
+    expect(resposta.status).to.equal(400);
+    expect(resposta.body.message).to.match(/Username do usuário a ser deletado é obrigatório/);
   });
 }); 

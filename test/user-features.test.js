@@ -20,45 +20,45 @@ describe('Funcionalidades de Usuário Comum', () => {
     await request(app)
       .post('/register')
       .send({ username: 'user@email.com', password: 'User12345678!' });
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'user@email.com', password: 'User12345678!' });
-    res.status.should.equal(201);
-    res.body.message.should.equal('Login realizado com sucesso. Sessão criada.');
+    resposta.status.should.equal(201);
+    resposta.body.message.should.equal('Login realizado com sucesso. Sessão criada.');
   });
 
   it('Login inválido (401)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'user@email.com', password: 'errada' });
-    res.status.should.equal(401);
-    res.body.message.should.equal('Usuário ou senha inválidos.');
+    resposta.status.should.equal(401);
+    resposta.body.message.should.equal('Usuário ou senha inválidos.');
   });
 
   it('Cadastro com sucesso (201)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/register')
       .send({ username: 'novo@email.com', password: 'SenhaForte123!' });
-    res.status.should.equal(201);
-    res.body.message.should.equal('Usuário cadastrado com sucesso.');
+    resposta.status.should.equal(201);
+    resposta.body.message.should.equal('Usuário cadastrado com sucesso.');
   });
 
   it('Cadastro com email já existente (400)', async () => {
     await request(app)
       .post('/register')
       .send({ username: 'existente@email.com', password: 'SenhaForte123!' });
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/register')
       .send({ username: 'existente@email.com', password: 'SenhaForte123!' });
-    res.status.should.equal(400);
-    res.body.message.should.match(/já existe/i);
+    resposta.status.should.equal(400);
+    resposta.body.message.should.match(/já existe/i);
   });
 
   it('Cadastro com senha fraca (400)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/register')
       .send({ username: 'fraco@email.com', password: '123' });
-    res.status.should.equal(400);
-    res.body.message.should.match(/senha/i);
+    resposta.status.should.equal(400);
+    resposta.body.message.should.match(/senha/i);
   });
 }); 
