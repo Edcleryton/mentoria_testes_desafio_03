@@ -46,13 +46,16 @@ Basta iniciar a aplicação e acessar esse link no navegador para visualizar e t
 ## Como baixar e instalar o projeto
 
 1. **Clone o repositório (ou baixe o ZIP):**
+
    ```bash
    git clone https://github.com/seu-usuario/mentoria_testes_desafio_03.git
    cd mentoria_testes_desafio_03
    ```
+
    > Se preferir, baixe o projeto como ZIP pelo GitHub e extraia em uma pasta.
 
 2. **Instale as dependências:**
+
    ```bash
    npm install
    ```
@@ -65,6 +68,7 @@ Basta iniciar a aplicação e acessar esse link no navegador para visualizar e t
      ```
 
 4. **Inicie a aplicação:**
+
    ```bash
    node app.js
    ```
@@ -75,6 +79,7 @@ Basta iniciar a aplicação e acessar esse link no navegador para visualizar e t
 ## Como rodar os testes
 
 Execute:
+
 ```bash
 npm test
 ```
@@ -103,6 +108,7 @@ Authorization: Bearer <seu_token>
 ## Exemplos de Requisições
 
 ### Cadastro de Usuário
+
 ```http
 POST /register
 Content-Type: application/json
@@ -113,6 +119,7 @@ Content-Type: application/json
 ```
 
 ### Login
+
 ```http
 POST /login
 Content-Type: application/json
@@ -121,7 +128,9 @@ Content-Type: application/json
   "password": "Admin123456!"
 }
 ```
+
 **Resposta:**
+
 ```json
 {
   "message": "Login realizado com sucesso. Sessão criada.",
@@ -130,6 +139,7 @@ Content-Type: application/json
 ```
 
 ### Recuperação de Senha
+
 ```http
 POST /remember-password
 Content-Type: application/json
@@ -139,6 +149,7 @@ Content-Type: application/json
 ```
 
 ### Alterar senha do próprio usuário (autenticado)
+
 ```http
 PATCH /user
 Authorization: Bearer <token>
@@ -149,6 +160,7 @@ Content-Type: application/json
 ```
 
 ### Alterar nome/senha de qualquer usuário (admin)
+
 ```http
 PATCH /admin/user
 Authorization: Bearer <token_admin>
@@ -161,8 +173,9 @@ Content-Type: application/json
 ```
 
 ### Deletar usuário (admin)
+
 ```http
-DELETE /user
+DELETE /admin/user
 Authorization: Bearer <token_admin>
 Content-Type: application/json
 {
@@ -170,9 +183,17 @@ Content-Type: application/json
 }
 ```
 
+### Listar usuários (admin)
+
+```http
+GET /admin/users
+Authorization: Bearer <token_admin>
+```
+
 ## Cobertura de Testes Automatizados
 
 Os seguintes arquivos de teste cobrem todos os endpoints da API:
+
 - test/login.test.js
 - test/user-features.test.js
 - test/user-password-update.test.js
@@ -181,19 +202,23 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 - test/user-delete.test.js
 
 ## Dependências principais
+
 - express
 - swagger-ui-express
 - swagger-jsdoc
 - jsonwebtoken
 - mocha (testes)
 - supertest (testes)
+- chai (testes)
 
 ## Observações
+
 - O arquivo `swagger.json` contém toda a documentação da API.
 - Para rodar a API em outra porta, defina a variável de ambiente `PORT`.
 - O cadastro exige email válido e senha forte (12-16 caracteres, maiúscula, minúscula, número e caractere especial).
 - Apenas administradores podem alterar ou deletar outros usuários.
 - **Nunca exponha senhas reais em código ou documentação em ambientes de produção!**
+- Todos os testes são isolados: cada teste cria seus próprios usuários quando necessário e o estado é resetado antes de cada execução.
 
 ## Estrutura de Pastas e Explicação
 
@@ -210,7 +235,12 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 ├── controllers/
 │   └── userController.js  # Controladores das rotas de usuário
 ├── test/
-│   └── user.test.js       # Testes automatizados
+│   ├── login.test.js
+│   ├── user-features.test.js
+│   ├── user-password-update.test.js
+│   ├── user-permission.test.js
+│   ├── admin-features.test.js
+│   └── user-delete.test.js
 ├── swagger.json           # Documentação Swagger da API
 ```
 
@@ -224,4 +254,3 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 ## Licença
 
 Este projeto está licenciado sob a licença MIT.
-
