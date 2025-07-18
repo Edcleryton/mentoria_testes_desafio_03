@@ -16,19 +16,19 @@ describe('API Login de Usuários', () => {
   });
 
   it('Login com sucesso (201)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'admin@email.com', password: 'Admin123456!' });
-    expect(res.status).to.equal(201);
-    expect(res.body.message).to.equal('Login realizado com sucesso. Sessão criada.');
+    expect(resposta.status).to.equal(201);
+    expect(resposta.body.message).to.equal('Login realizado com sucesso. Sessão criada.');
   });
 
   it('Login inválido (401)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'admin', password: 'errada' });
-    expect(res.status).to.equal(401);
-    expect(res.body.message).to.equal('Usuário ou senha inválidos.');
+    expect(resposta.status).to.equal(401);
+    expect(resposta.body.message).to.equal('Usuário ou senha inválidos.');
   });
 
   it('Bloquear senha após 3 tentativas (429)', async () => {
@@ -37,74 +37,74 @@ describe('API Login de Usuários', () => {
         .post('/login')
         .send({ username: 'user@email.com', password: 'errada' });
     }
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'user@email.com', password: 'errada' });
-    expect(res.status).to.equal(429);
-    expect(res.body.message).to.equal('Usuário bloqueado por excesso de tentativas.');
+    expect(resposta.status).to.equal(429);
+    expect(resposta.body.message).to.equal('Usuário bloqueado por excesso de tentativas.');
   });
 
   it('Lembrar senha (201)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/remember-password')
       .send({ username: 'admin@email.com' });
-    res.status.should.equal(201);
-    res.body.message.should.equal('Instruções de recuperação enviadas. Solicitação criada.');
+    resposta.status.should.equal(201);
+    resposta.body.message.should.equal('Instruções de recuperação enviadas. Solicitação criada.');
   });
 
   it('Lembrar senha para usuário inexistente (404)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/remember-password')
       .send({ username: 'naoexiste' });
-    res.status.should.equal(404);
-    res.body.message.should.equal('Usuário não encontrado.');
+    resposta.status.should.equal(404);
+    resposta.body.message.should.equal('Usuário não encontrado.');
   });
 
   it('Login com usuário proibido (403)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'forbidden', password: 'qualquer' });
-    res.status.should.equal(403);
-    res.body.message.should.equal('Usuário não tem permissão para acessar este recurso.');
+    resposta.status.should.equal(403);
+    resposta.body.message.should.equal('Usuário não tem permissão para acessar este recurso.');
   });
 
   it('Lembrar senha com usuário proibido (403)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/remember-password')
       .send({ username: 'forbidden' });
-    res.status.should.equal(403);
-    res.body.message.should.equal('Usuário não tem permissão para solicitar recuperação de senha.');
+    resposta.status.should.equal(403);
+    resposta.body.message.should.equal('Usuário não tem permissão para solicitar recuperação de senha.');
   });
 
   it('Login com resposta parcial (203)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'partial', password: 'qualquer' });
-    res.status.should.equal(203);
-    res.body.message.should.equal('Login realizado, mas informações parciais retornadas.');
+    resposta.status.should.equal(203);
+    resposta.body.message.should.equal('Login realizado, mas informações parciais retornadas.');
   });
 
   it('Lembrar senha com resposta parcial (203)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/remember-password')
       .send({ username: 'partial' });
-    res.status.should.equal(203);
-    res.body.message.should.equal('Solicitação processada, mas informações parciais retornadas.');
+    resposta.status.should.equal(203);
+    resposta.body.message.should.equal('Solicitação processada, mas informações parciais retornadas.');
   });
 
   it('Login com campos obrigatórios ausentes (400)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/login')
       .send({ username: 'admin' });
-    res.status.should.equal(400);
-    res.body.message.should.equal('Username e senha são obrigatórios.');
+    resposta.status.should.equal(400);
+    resposta.body.message.should.equal('Username e senha são obrigatórios.');
   });
 
   it('Lembrar senha com campo obrigatório ausente (400)', async () => {
-    const res = await request(app)
+    const resposta = await request(app)
       .post('/remember-password')
       .send({});
-    res.status.should.equal(400);
-    res.body.message.should.equal('Username é obrigatório.');
+    resposta.status.should.equal(400);
+    resposta.body.message.should.equal('Username é obrigatório.');
   });
 }); 
