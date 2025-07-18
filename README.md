@@ -16,7 +16,6 @@
 - [Dependências principais](#dependências-principais)
 - [Observações](#observações)
 - [Licença](#licença)
-- [Contato](#contato)
 
 ## Histórico de Alterações
 
