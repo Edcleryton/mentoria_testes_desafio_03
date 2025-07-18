@@ -129,6 +129,15 @@ Content-Type: application/json
 }
 ```
 
+### Recuperação de Senha
+```http
+POST /remember-password
+Content-Type: application/json
+{
+  "email": "usuario@email.com"
+}
+```
+
 ### Alterar senha do próprio usuário (autenticado)
 ```http
 PATCH /user
@@ -161,14 +170,15 @@ Content-Type: application/json
 }
 ```
 
-### Recuperação de Senha
-```http
-POST /remember-password
-Content-Type: application/json
-{
-  "email": "usuario@email.com"
-}
-```
+## Cobertura de Testes Automatizados
+
+Os seguintes arquivos de teste cobrem todos os endpoints da API:
+- test/login.test.js
+- test/user-features.test.js
+- test/user-password-update.test.js
+- test/user-permission.test.js
+- test/admin-features.test.js
+- test/user-delete.test.js
 
 ## Dependências principais
 - express
