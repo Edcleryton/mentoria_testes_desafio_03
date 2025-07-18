@@ -1,22 +1,33 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/userController');
-const userService = require('../services/userService');
-const jwt = require('jsonwebtoken');
+const userController = require("../controllers/userController");
+const userService = require("../services/userService");
+const jwt = require("jsonwebtoken");
 
 // Middleware para autenticação JWT
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Token não fornecido.' });
-  jwt.verify(token, 'secreta_super_segura', (err, decoded) => {
-    if (err) return res.status(403).json({ message: 'Token inválido.' });
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Token não fornecido." });
+  jwt.verify(token, "secreta_super_segura", (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Token inválido." });
     // Garante que role está atualizado (caso o usuário tenha sido alterado)
     const user = userService.getUser(decoded.username);
-    if (!user) return res.status(403).json({ message: 'Usuário não encontrado.' });
+    if (!user)
+      return res.status(403).json({ message: "Usuário não encontrado." });
     req.user = { username: user.username, role: user.role };
     next();
   });
+}
+
+// Middleware para autorizar apenas admin
+function authorizeAdmin(req, res, next) {
+  if (req.user && req.user.role === "admin") {
+    return next();
+  }
+  return res
+    .status(403)
+    .json({ message: "Apenas administradores podem acessar esta rota." });
 }
 
 /**
@@ -58,7 +69,7 @@ function authenticateToken(req, res, next) {
  *       '500':
  *         description: Internal Server Error. Ocorreu um erro inesperado no servidor.
  */
-router.post('/login', userController.login);
+router.post("/login", userController.login);
 
 /**
  * @swagger
@@ -92,7 +103,7 @@ router.post('/login', userController.login);
  *       '500':
  *         description: Internal Server Error. Ocorreu um erro inesperado no servidor.
  */
-router.post('/remember-password', userController.rememberPassword);
+router.post("/remember-password", userController.rememberPassword);
 
 /**
  * @swagger
@@ -123,7 +134,7 @@ router.post('/remember-password', userController.rememberPassword);
  *       '500':
  *         description: Internal Server Error. Ocorreu um erro inesperado no servidor.
  */
-router.post('/register', userController.register);
+router.post("/register", userController.register);
 
 /**
  * @swagger
@@ -156,8 +167,24 @@ router.post('/register', userController.register);
  *       '404':
  *         description: Usuário não encontrado.
  */
-router.patch('/user', authenticateToken, userController.updateUser);
-router.patch('/admin/user', authenticateToken, userController.updateUserByAdmin);
-router.delete('/user', authenticateToken, userController.deleteUser);
+router.patch("/user", authenticateToken, userController.updateUser);
+router.patch(
+  "/admin/user",
+  authenticateToken,
+  userController.updateUserByAdmin,
+);
+router.delete(
+  "/admin/user",
+  authenticateToken,
+  authorizeAdmin,
+  userController.deleteUser,
+);
 
-module.exports = router; 
+router.get(
+  "/admin/users",
+  authenticateToken,
+  authorizeAdmin,
+  userController.listUsers,
+);
+
+module.exports = router;
