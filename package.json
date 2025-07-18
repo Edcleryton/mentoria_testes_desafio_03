@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha --recursive"
+    "test": "mocha --recursive --reporter mochawesome"
   },
   "keywords": [
     "express",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "chai": "4.5.0",
     "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3",
     "prettier": "^3.6.2",
     "supertest": "^6.3.3"
   }

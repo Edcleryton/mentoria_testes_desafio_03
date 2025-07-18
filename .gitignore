@@ -34,3 +34,6 @@ Thumbs.db
 
 # VSCode settings
 .vscode/ 
+
+# Mochawesome report
+mochawesome-report/
