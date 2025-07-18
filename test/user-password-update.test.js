@@ -59,4 +59,24 @@ describe("Alteração de senha do Usuário Comum", () => {
     res.body.message.should.match(/A senha deve ter entre 12 e 16 caracteres/);
 
   });
+
+  it("Não permite GET em /user", async () => {
+    const res = await request(app)
+      .get("/user");
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite POST em /user", async () => {
+    const res = await request(app)
+      .post("/user")
+      .send({ password: "NovaSenha12345!" });
+    expect([404, 405]).to.include(res.status);
+  });
+
+  it("Não permite DELETE em /user", async () => {
+    const res = await request(app)
+      .delete("/user")
+      .send({ username: "user@email.com" });
+    expect([404, 405]).to.include(res.status);
+  });
 });
