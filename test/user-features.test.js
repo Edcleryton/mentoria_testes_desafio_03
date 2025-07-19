@@ -25,7 +25,7 @@ describe("Funcionalidades de Usuário Comum", () => {
       .send({ username: "user@email.com", password: "User12345678!" });
     res.status.should.equal(200);
     res.body.message.should.equal(
-      "Login realizado com sucesso. Sessão criada.",
+      "Login realizado com sucesso.",
     );
   });
 

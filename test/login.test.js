@@ -21,7 +21,7 @@ describe("API Login de Usuários", () => {
       .send({ username: "admin@email.com", password: "Admin123456!" });
     expect(res.status).to.equal(200);
     expect(res.body.message).to.equal(
-      "Login realizado com sucesso. Sessão criada.",
+      "Login realizado com sucesso.",
     );
   });
 
@@ -55,7 +55,7 @@ describe("API Login de Usuários", () => {
       .send({ username: "admin@email.com" });
     res.status.should.equal(200);
     res.body.message.should.equal(
-      "Instruções de recuperação enviadas. Solicitação criada.",
+      "Instruções de recuperação enviadas.",
     );
   });
 
