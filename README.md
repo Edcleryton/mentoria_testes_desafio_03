@@ -168,7 +168,7 @@ Content-Type: application/json
 {
   "username": "user@email.com",
   "password": "NovaSenha12345!",
-  "newUsername": "novo@email.com" // opcional
+  "newUsername": "novo@email.com" 
 }
 ```
 
