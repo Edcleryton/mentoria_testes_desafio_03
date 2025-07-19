@@ -144,7 +144,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK. Login bem-sucedido.",
+            "description": "Login realizado com sucesso. Sessão criada.",
             "content": {
               "application/json": {
                 "schema": {
@@ -257,7 +257,7 @@
           }
         },
         "responses": {
-          "200": { "description": "OK. Instruções de recuperação enviadas." },
+          "200": { "description": "Instruções de recuperação enviadas. Solicitação criada." },
           "201": {
             "description": "Created. Solicitação de recuperação criada com sucesso."
           },
