@@ -1,3 +1,4 @@
+
 const request = require("supertest");
 const express = require("express");
 const userRoutes = require("../src/routes/userRoutes");
@@ -15,11 +16,11 @@ describe("API Login de Usuários", () => {
     userService._reset && userService._reset();
   });
 
-  it("Login com sucesso (201)", async () => {
+  it("Login com sucesso (200)", async () => {
     const res = await request(app)
       .post("/login")
       .send({ username: "admin@email.com", password: "Admin123456!" });
-    expect(res.status).to.equal(201);
+    expect(res.status).to.equal(200);
     expect(res.body.message).to.equal(
       "Login realizado com sucesso. Sessão criada.",
     );

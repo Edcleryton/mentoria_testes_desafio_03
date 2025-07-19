@@ -15,7 +15,7 @@ describe("Funcionalidades de Usuário Comum", () => {
     userService._reset && userService._reset();
   });
 
-  it("Login com sucesso (201)", async () => {
+  it("Login com sucesso (200)", async () => {
     // Garante que o usuário existe após o reset
     await request(app)
       .post("/register")
@@ -23,7 +23,7 @@ describe("Funcionalidades de Usuário Comum", () => {
     const res = await request(app)
       .post("/login")
       .send({ username: "user@email.com", password: "User12345678!" });
-    res.status.should.equal(201);
+    res.status.should.equal(200);
     res.body.message.should.equal(
       "Login realizado com sucesso. Sessão criada.",
     );
