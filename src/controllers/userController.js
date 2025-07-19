@@ -48,7 +48,7 @@ exports.login = (req, res) => {
       "secreta_super_segura",
       { expiresIn: "1h" },
     );
-    return res.status(201).json({
+    return res.status(200).json({
       message: "Login realizado com sucesso.",
       token,
       success: true,

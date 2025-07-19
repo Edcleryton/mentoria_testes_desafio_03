@@ -203,13 +203,21 @@ describe("GET /admin/users", () => {
     res.body.some((u) => u.username === "admin@email.com").should.be.true;
     res.body.some((u) => u.username === "user@email.com").should.be.true;
   });
-
+  
   it("deve retornar 403 para usuário comum", async () => {
     const res = await request(app)
       .get("/admin/users")
       .set("Authorization", `Bearer ${userToken}`);
     res.status.should.equal(403);
     res.body.message.should.match(/Apenas administradores/);
+  });
+
+  it("deve retornar 403 para token inválido", async () => {
+    const res = await request(app)
+      .get("/admin/users")
+      .set("Authorization", "Bearer tokeninvalido");
+    res.status.should.equal(403);
+    res.body.message.should.match(/Token inválido./);
   });
 
   it("deve retornar 401 para requisição sem token", async () => {
