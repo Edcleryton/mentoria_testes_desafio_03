@@ -49,7 +49,7 @@ exports.login = (req, res) => {
       { expiresIn: "1h" },
     );
     return res.status(200).json({
-      message: "Login realizado com sucesso. Sessão criada.",
+      message: "Login realizado com sucesso.",
       token,
       success: true,
     });
@@ -80,9 +80,9 @@ exports.rememberPassword = (req, res) => {
   if (result.status === "not_found") {
     return res.status(404).json({ message: "Usuário não encontrado." });
   }
-  // 201 Created para solicitação de recuperação criada
-  return res.status(201).json({
-    message: "Instruções de recuperação enviadas. Solicitação criada.",
+  // 200 OK para solicitação de recuperação processada
+  return res.status(200).json({
+    message: "Instruções de recuperação enviadas.",
   });
 };
 

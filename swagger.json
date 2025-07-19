@@ -65,7 +65,7 @@
           "success": { "type": "boolean" }
         },
         "example": {
-          "message": "Login realizado com sucesso. Sessão criada.",
+          "message": "Login realizado com sucesso.",
           "token": "<jwt_token>",
           "success": true
         }
@@ -144,29 +144,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK. Login bem-sucedido.",
+            "description": "Login realizado com sucesso.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LoginSuccessResponse"
                 },
                 "example": {
-                  "message": "Login realizado com sucesso. Sessão criada.",
-                  "token": "<jwt_token>",
-                  "success": true
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Created. Login realizado e sessão criada (caso aplicável).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginSuccessResponse"
-                },
-                "example": {
-                  "message": "Login realizado com sucesso. Sessão criada.",
+                  "message": "Login realizado com sucesso.",
                   "token": "<jwt_token>",
                   "success": true
                 }
@@ -257,10 +242,7 @@
           }
         },
         "responses": {
-          "200": { "description": "OK. Instruções de recuperação enviadas." },
-          "201": {
-            "description": "Created. Solicitação de recuperação criada com sucesso."
-          },
+          "200": { "description": "Instruções de recuperação enviadas." },
           "203": {
             "description": "Non-Authoritative Information. Solicitação processada, mas informações podem ser parciais."
           },
