@@ -15,13 +15,13 @@ describe("API Login de Usuários", () => {
     userService._reset && userService._reset();
   });
 
-  it("Login com sucesso (201)", async () => {
+  it("Login com sucesso (200)", async () => {
     const res = await request(app)
       .post("/login")
       .send({ username: "admin@email.com", password: "Admin123456!" });
-    expect(res.status).to.equal(201);
+    expect(res.status).to.equal(200);
     expect(res.body.message).to.equal(
-      "Login realizado com sucesso. Sessão criada.",
+      "Login realizado com sucesso.",
     );
   });
 
@@ -49,13 +49,13 @@ describe("API Login de Usuários", () => {
     );
   });
 
-  it("Lembrar senha (201)", async () => {
+  it("Lembrar senha (200)", async () => {
     const res = await request(app)
       .post("/remember-password")
       .send({ username: "admin@email.com" });
-    res.status.should.equal(201);
+    res.status.should.equal(200);
     res.body.message.should.equal(
-      "Instruções de recuperação enviadas. Solicitação criada.",
+      "Instruções de recuperação enviadas.",
     );
   });
 
