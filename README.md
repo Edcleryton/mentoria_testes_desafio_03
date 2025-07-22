@@ -254,3 +254,36 @@ Os seguintes arquivos de teste cobrem todos os endpoints da API:
 ## Licença
 
 Este projeto está licenciado sob a licença MIT.
+
+## 👤 Autores
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <a href="https://github.com/Edcleryton">
+        <img src="https://avatars.githubusercontent.com/u/134793465?v=4" width="50px" alt="Edcleryton Silva"/><br />
+        <sub><b>Edcleryton Silva</b></sub>
+      </a>
+    </td>
+    <td align="center" valign="top">
+      <a href="https://github.com/9809022">
+        <img src="https://avatars.githubusercontent.com/u/9809022?v=4" width="50px" alt="Autor 1"/><br />
+        <sub><b>Autor 1</b></sub>
+      </a>
+    </td>
+    <td align="center" valign="top">
+      <a href="https://github.com/43006576">
+        <img src="https://avatars.githubusercontent.com/u/43006576?v=4" width="50px" alt="Autor 2"/><br />
+        <sub><b>Autor 2</b></sub>
+      </a>
+    </td>
+    <td align="center" valign="top">
+      <a href="https://github.com/7840758">
+        <img src="https://avatars.githubusercontent.com/u/7840758?v=4" width="50px" alt="Autor 3"/><br />
+        <sub><b>Autor 3</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+---
