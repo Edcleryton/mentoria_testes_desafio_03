@@ -21,12 +21,12 @@
 
 - Implementação de autenticação JWT (Bearer Token) para todos os endpoints protegidos.
 - Adição de roles de usuário: `admin` e `user`.
-- Criação de usuários administradores: `admin@email.com`, `edcleryton.silva@email.com`, `jorge.mercado@email.com` (todos com senha `Admin123456!`).
+- Criação de usuários administradores: `admin@email.com`, `edcleryton.silva@email.com`, `jorge.mercado@email.com`.
 - Criação de endpoint PATCH `/admin/user` para administradores alterarem nome/senha de qualquer usuário.
 - Criação de endpoint DELETE `/user` para administradores deletarem qualquer usuário.
-- Apenas administradores podem alterar ou deletar outros usuários.
-- Separação dos testes automatizados em blocos distintos para garantir isolamento e clareza dos cenários (usuário comum, admin, permissões, etc).
-- Reset robusto do estado dos usuários antes de cada teste.
+- Novo endpoint: `GET /health` para verificar se a API está online.
+- Adicionado suporte a logs de debug via variável de ambiente `DEBUG=true`.
+- Separação dos testes automatizados em blocos distintos.
 - Documentação Swagger e exemplos de requisição atualizados.
 
 ## Documentação Swagger
@@ -35,24 +35,20 @@ A documentação interativa da API está disponível em:
 
 [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-Basta iniciar a aplicação e acessar esse link no navegador para visualizar e testar todos os endpoints da API.
-
 ## Pré-requisitos
 
 - [Node.js](https://nodejs.org/) (versão 14 ou superior)
-- [npm](https://www.npmjs.com/) (geralmente já vem com o Node.js)
-- Git (opcional, para clonar o repositório)
+- [npm](https://www.npmjs.com/)
+- Git (opcional)
 
 ## Como baixar e instalar o projeto
 
-1. **Clone o repositório (ou baixe o ZIP):**
+1. **Clone o repositório ou baixe como ZIP:**
 
    ```bash
-   git clone https://github.com/seu-usuario/mentoria_testes_desafio_03.git
+   git clone https://github.com/Edcleryton/mentoria_testes_desafio_03/
    cd mentoria_testes_desafio_03
    ```
-
-   > Se preferir, baixe o projeto como ZIP pelo GitHub e extraia em uma pasta.
 
 2. **Instale as dependências:**
 
@@ -60,12 +56,16 @@ Basta iniciar a aplicação e acessar esse link no navegador para visualizar e t
    npm install
    ```
 
-3. **(Opcional) Defina a porta da aplicação:**
-   - Por padrão, a API roda na porta 3000. Para mudar, defina a variável de ambiente `PORT`:
-     ```bash
-     export PORT=4000 # Linux/Mac
-     set PORT=4000    # Windows
-     ```
+3. **Configure as variáveis de ambiente (.env):**
+
+   Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+   ```env
+   DEBUG=true
+   PORT=3000
+   ```
+
+   > `DEBUG=true` ativa logs de debug no terminal. É opcional, mas útil para desenvolvimento.
 
 4. **Inicie a aplicação:**
 
@@ -74,11 +74,10 @@ Basta iniciar a aplicação e acessar esse link no navegador para visualizar e t
    ```
 
 5. **Acesse a documentação Swagger:**
-   - [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (ou a porta que você definiu)
+
+   [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
 ## Como rodar os testes
-
-Execute:
 
 ```bash
 npm test
@@ -86,55 +85,32 @@ npm test
 
 ## Usuários de exemplo
 
-> **Atenção:** As senhas estão explícitas para facilitar o estudo e os testes. **Nunca faça isso em produção!**
+> ⚠️ **Atenção:** Nunca use essas senhas em produção!
 
-- **admin@email.com** (admin)
-  - Senha: `Admin123456!`
-- **edcleryton.silva@email.com** (admin)
-  - Senha: `Admin123456!`
-- **jorge.mercado@email.com** (admin)
-  - Senha: `Admin123456!`
-- **user@email.com** (usuário comum)
-  - Senha: `User12345678!`
+| Email                                                           | Tipo  | Senha         |
+| --------------------------------------------------------------- | ----- | ------------- |
+| [admin@email.com](mailto:admin@email.com)                       | admin | Admin123456!  |
+| [edcleryton.silva@email.com](mailto:edcleryton.silva@email.com) | admin | Admin123456!  |
+| [jorge.mercado@email.com](mailto:jorge.mercado@email.com)       | admin | Admin123456!  |
+| [user@email.com](mailto:user@email.com)                         | comum | User12345678! |
 
 ## Autenticação
 
-A API utiliza autenticação do tipo **Bearer Token** (JWT). Para acessar endpoints protegidos, faça login e utilize o token retornado no header:
+A API utiliza JWT. Use o token no header:
 
-```
+```http
 Authorization: Bearer <seu_token>
 ```
 
 ## Exemplos de Requisições
 
-### Cadastro de Usuário
-
-```http
-POST /register
-Content-Type: application/json
-{
-  "email": "usuario@email.com",
-  "password": "SenhaForte123!"
-}
-```
-
 ### Login
 
 ```http
 POST /login
-Content-Type: application/json
 {
   "email": "admin@email.com",
   "password": "Admin123456!"
-}
-```
-
-**Resposta:**
-
-```json
-{
-  "message": "Login realizado com sucesso. Sessão criada.",
-  "token": "<jwt_token>"
 }
 ```
 
@@ -142,148 +118,149 @@ Content-Type: application/json
 
 ```http
 POST /remember-password
-Content-Type: application/json
 {
-  "email": "usuario@email.com"
+  "email": "user@email.com"
 }
 ```
 
-### Alterar senha do próprio usuário (autenticado)
+### Verificar status da API (Health Check)
+
+```http
+GET /health
+```
+
+**Resposta:**
+
+```json
+{
+  "status": "ok",
+  "message": "API está funcionando"
+}
+```
+
+### Alterar dados (usuário autenticado)
 
 ```http
 PATCH /user
 Authorization: Bearer <token>
-Content-Type: application/json
 {
-  "password": "NovaSenha12345!"
+  "password": "NovaSenha123!"
 }
 ```
 
-### Alterar nome/senha de qualquer usuário (admin)
+### Ações administrativas
+
+* **Alterar qualquer usuário:**
 
 ```http
 PATCH /admin/user
-Authorization: Bearer <token_admin>
-Content-Type: application/json
+Authorization: Bearer <admin_token>
 {
   "username": "user@email.com",
-  "password": "NovaSenha12345!",
-  "newUsername": "novo@email.com" 
+  "password": "NovaSenha123!",
+  "newUsername": "novo@email.com"
 }
 ```
 
-### Deletar usuário (admin)
+* **Deletar usuário:**
 
 ```http
 DELETE /admin/user
-Authorization: Bearer <token_admin>
-Content-Type: application/json
+Authorization: Bearer <admin_token>
 {
   "username": "user@email.com"
 }
 ```
 
-### Listar usuários (admin)
+* **Listar todos os usuários:**
 
 ```http
 GET /admin/users
-Authorization: Bearer <token_admin>
+Authorization: Bearer <admin_token>
 ```
 
-## Cobertura de Testes Automatizados
+## Cobertura de Testes
 
-Os seguintes arquivos de teste cobrem todos os endpoints da API:
+Arquivos de teste incluídos:
 
-- test/login.test.js
-- test/user-features.test.js
-- test/user-password-update.test.js
-- test/user-permission.test.js
-- test/admin-features.test.js
-- test/user-delete.test.js
+```
+test/
+├── login.test.js
+├── user-features.test.js
+├── user-password-update.test.js
+├── user-permission.test.js
+├── admin-features.test.js
+└── user-delete.test.js
+```
 
 ## Dependências principais
 
-- express
-- swagger-ui-express
-- swagger-jsdoc
-- jsonwebtoken
-- mocha (testes)
-- supertest (testes)
-- chai (testes)
+* `express`
+* `swagger-ui-express`
+* `swagger-jsdoc`
+* `jsonwebtoken`
+* `dotenv`
+* `mocha`, `chai`, `supertest` (testes)
 
 ## Observações
 
-- O arquivo `swagger.json` contém toda a documentação da API.
-- Para rodar a API em outra porta, defina a variável de ambiente `PORT`.
-- O cadastro exige email válido e senha forte (12-16 caracteres, maiúscula, minúscula, número e caractere especial).
-- Apenas administradores podem alterar ou deletar outros usuários.
-- **Nunca exponha senhas reais em código ou documentação em ambientes de produção!**
-- Todos os testes são isolados: cada teste cria seus próprios usuários quando necessário e o estado é resetado antes de cada execução.
+* Logs de debug estão disponíveis se você definir `DEBUG=true` no `.env`.
+* Para rodar em outra porta, defina `PORT=xxxx` no `.env`.
+* O arquivo `swagger.json` contém a documentação da API.
+* Todos os testes são independentes e reiniciam o estado da base de dados antes de cada execução.
 
-## Estrutura de Pastas e Explicação
+## Estrutura de Pastas
 
 ```
 /
-├── app.js                 # Arquivo principal da aplicação Express
-├── package.json           # Gerenciador de dependências e scripts
-├── package-lock.json      # Controle de versões das dependências
-├── README.md              # Documentação do projeto
+├── app.js
+├── .env
+├── package.json
+├── README.md
 ├── routes/
-│   └── userRoutes.js      # Rotas relacionadas a usuários
-├── services/
-│   └── userService.js     # Lógica de negócio dos usuários
+│   └── userRoutes.js
 ├── controllers/
-│   └── userController.js  # Controladores das rotas de usuário
+│   └── userController.js
+├── services/
+│   └── userService.js
+├── utils/
+│   └── logger.js
 ├── test/
-│   ├── login.test.js
-│   ├── user-features.test.js
-│   ├── user-password-update.test.js
-│   ├── user-permission.test.js
-│   ├── admin-features.test.js
-│   └── user-delete.test.js
-├── swagger.json           # Documentação Swagger da API
+│   ├── *.test.js
+├── swagger.json
 ```
-
-- **app.js**: Ponto de entrada da aplicação.
-- **routes/**: Define as rotas da API.
-- **controllers/**: Controla as requisições e respostas das rotas.
-- **services/**: Contém a lógica de negócio.
-- **test/**: Testes automatizados.
-- **swagger.json**: Documentação da API.
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT.
+Este projeto está licenciado sob a Licença MIT.
 
 ## 👤 Autores
 
 <table>
   <tr>
-    <td align="center" valign="top">
+    <td align="center">
       <a href="https://github.com/Edcleryton">
-        <img src="https://avatars.githubusercontent.com/u/134793465?v=4" width="50px" alt="Edcleryton Silva"/><br />
+        <img src="https://avatars.githubusercontent.com/u/134793465?v=4" width="50px" /><br />
         <sub><b>Edcleryton Silva</b></sub>
       </a>
     </td>
-    <td align="center" valign="top">
+    <td align="center">
       <a href="https://github.com/9809022">
-        <img src="https://avatars.githubusercontent.com/u/9809022?v=4" width="50px" alt="Autor 1"/><br />
+        <img src="https://avatars.githubusercontent.com/u/9809022?v=4" width="50px" /><br />
         <sub><b>Autor 1</b></sub>
       </a>
     </td>
-    <td align="center" valign="top">
+    <td align="center">
       <a href="https://github.com/43006576">
-        <img src="https://avatars.githubusercontent.com/u/43006576?v=4" width="50px" alt="Autor 2"/><br />
+        <img src="https://avatars.githubusercontent.com/u/43006576?v=4" width="50px" /><br />
         <sub><b>Autor 2</b></sub>
       </a>
     </td>
-    <td align="center" valign="top">
+    <td align="center">
       <a href="https://github.com/7840758">
-        <img src="https://avatars.githubusercontent.com/u/7840758?v=4" width="50px" alt="Autor 3"/><br />
+        <img src="https://avatars.githubusercontent.com/u/7840758?v=4" width="50px" /><br />
         <sub><b>Autor 3</b></sub>
       </a>
     </td>
   </tr>
 </table>
-
----
