@@ -102,6 +102,27 @@ A API utiliza JWT. Use o token no header:
 Authorization: Bearer <seu_token>
 ```
 
+## Health Check e Debug
+
+- O endpoint `/health` está disponível na API para checagem rápida de disponibilidade.
+- O frontend consome `/health` para verificar rapidamente se a API está online antes de permitir ações do usuário, evitando timeouts longos.
+- Todos os acessos a endpoints são logados no terminal (debug), facilitando o rastreio de problemas.
+- Para ativar logs detalhados na API, defina `DEBUG=true` no arquivo `.env`.
+
+**Exemplo de uso:**
+```bash
+curl -X GET http://localhost:3000/health
+```
+
+**Resposta esperada:**
+```json
+{
+  "status": "ok",
+  "message": "API está funcionando",
+  "timestamp": "2024-06-20T12:34:56.789Z"
+}
+```
+
 ## Exemplos de Requisições
 
 ### Login
@@ -109,7 +130,7 @@ Authorization: Bearer <seu_token>
 ```http
 POST /login
 {
-  "email": "admin@email.com",
+  "username": "admin@email.com",
   "password": "Admin123456!"
 }
 ```
@@ -119,7 +140,7 @@ POST /login
 ```http
 POST /remember-password
 {
-  "email": "user@email.com"
+  "username": "user@email.com"
 }
 ```
 
