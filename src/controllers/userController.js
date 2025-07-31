@@ -61,6 +61,7 @@ exports.rememberPassword = (req, res) => {
 	logDebug('Request headers:', req.headers);
 
 	const { username } = req.body;
+	
 	if (!username) {
 		return res.status(400).json({ message: 'Username é obrigatório.', success: false });
 	}
@@ -84,8 +85,9 @@ exports.rememberPassword = (req, res) => {
 	}
 	
 	// Validação se o usuário existe no sistema
-	const user = userService.getUser(username);
-	if (!user) {
+	const result = userService.rememberPassword(username);
+	
+	if (result.status === 'not_found') {
 		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
 	}
 	
