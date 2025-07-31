@@ -168,23 +168,9 @@ router.post("/register", userController.register);
  *         description: Usuário não encontrado.
  */
 router.patch("/user", authenticateToken, userController.updateUser);
-router.patch(
-  "/admin/user",
-  authenticateToken,
-  userController.updateUserByAdmin,
-);
-router.delete(
-  "/admin/user",
-  authenticateToken,
-  authorizeAdmin,
-  userController.deleteUser,
-);
 
-router.get(
-  "/admin/users",
-  authenticateToken,
-  authorizeAdmin,
-  userController.listUsers,
-);
+router.delete("/user", authenticateToken, authorizeAdmin, userController.deleteUser);
+
+router.get("/users", authenticateToken, authorizeAdmin, userController.listUsers);
 
 module.exports = router;
