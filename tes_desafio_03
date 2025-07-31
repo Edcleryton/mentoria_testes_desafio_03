@@ -1,5 +1,0 @@
-[33mf0e2319[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfix-admin-routes-and-tests[m[33m, [m[1;31morigin/fix-admin-routes-and-tests[m[33m)[m fix: corrige rotas de admin e status codes dos testes
-[33me7d6e59[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m docs: atualiza README com health check, debug e exemplos atualizado
-[33m1513c56[m feat: ajustes e melhorias na API
-[33m9d3307f[m Merge pull request #19 from Edcleryton/newEdnpoint-debug
-[33m614f43b[m[33m ([m[1;31morigin/newEdnpoint-debug[m[33m)[m feat: Logs and /health added
