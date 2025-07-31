@@ -256,8 +256,4 @@ router.delete("/admin/user", authenticateToken, authorizeAdmin, userController.d
  */
 router.get("/admin/users", authenticateToken, authorizeAdmin, userController.listUsers);
 
-router.delete("/user", authenticateToken, authorizeAdmin, userController.deleteUser);
-
-router.get("/users", authenticateToken, authorizeAdmin, userController.listUsers);
-
 module.exports = router;
