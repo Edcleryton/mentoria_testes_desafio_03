@@ -77,6 +77,7 @@ describe("Alteração de senha do Usuário Comum", () => {
     const res = await request(app)
       .delete("/user")
       .send({ username: "user@email.com" });
-    expect([404, 405]).to.include(res.status);
+    expect(res.status).to.equal(401);
+    expect(res.body.message).to.equal("Token não fornecido.");
   });
 });
