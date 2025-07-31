@@ -65,8 +65,16 @@ exports.rememberPassword = (req, res) => {
 		return res.status(400).json({ message: 'Username é obrigatório.', success: false });
 	}
 	// Simulação de usuário não encontrado
-	if (username === 'notfound') {
+	if (username === 'notfound' || username === 'naoexiste') {
 		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
+	}
+	// Simulação de usuário proibido
+	if (username === 'forbidden') {
+		return res.status(403).json({ message: 'Usuário não tem permissão para solicitar recuperação de senha.', success: false });
+	}
+	// Simulação de resposta parcial
+	if (username === 'partial') {
+		return res.status(203).json({ message: 'Solicitação processada, mas informações parciais retornadas.', success: true });
 	}
 	// Simulação de sucesso
 	return res.status(200).json({ message: 'Instruções de recuperação enviadas.', success: true });
@@ -125,7 +133,7 @@ exports.updateUser = (req, res) => {
 exports.updateUserByAdmin = (req, res) => {
 	console.log('updateUserByAdmin - req.user:', req.user);
 	console.log('updateUserByAdmin - req.body:', req.body);
-	const { username: targetUsername, newPassword, newUsername } = req.body;
+	const { username: targetUsername, newPassword, password, newUsername } = req.body;
 	const { role } = req.user;
 	if (role !== 'admin') {
 		return res.status(403).json({
@@ -136,14 +144,16 @@ exports.updateUserByAdmin = (req, res) => {
 		return res.status(400).json({ message: 'Username do usuário a ser alterado é obrigatório.' });
 	}
 	const newData = {};
-	if (newPassword) {
-		if (!isStrongPassword(newPassword)) {
+	// Aceita tanto password quanto newPassword
+	if (newPassword || password) {
+		const passwordToUse = newPassword || password;
+		if (!isStrongPassword(passwordToUse)) {
 			return res.status(400).json({
 				message:
 					'A senha deve ter entre 12 e 16 caracteres, conter maiúsculas, minúsculas, números e caractere especial.',
 			});
 		}
-		newData.password = newPassword;
+		newData.password = passwordToUse;
 	}
 	if (newUsername) {
 		if (!isValidEmail(newUsername)) {

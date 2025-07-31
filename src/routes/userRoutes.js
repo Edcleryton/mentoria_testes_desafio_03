@@ -169,8 +169,91 @@ router.post("/register", userController.register);
  */
 router.patch("/user", authenticateToken, userController.updateUser);
 
-router.delete("/user", authenticateToken, authorizeAdmin, userController.deleteUser);
+/**
+ * @swagger
+ * /admin/user:
+ *   patch:
+ *     summary: Admin atualiza dados de outro usuário
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username do usuário a ser alterado
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 12
+ *                 maxLength: 16
+ *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\-=[\\]{};':\\\"|,.<>/?]).{12,16}$'
+ *               newUsername:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       '200':
+ *         description: Usuário atualizado com sucesso.
+ *       '400':
+ *         description: Dados inválidos.
+ *       '401':
+ *         description: Token não fornecido.
+ *       '403':
+ *         description: Apenas administradores podem acessar esta rota.
+ *       '404':
+ *         description: Usuário não encontrado.
+ */
+router.patch("/admin/user", authenticateToken, authorizeAdmin, userController.updateUserByAdmin);
 
-router.get("/users", authenticateToken, authorizeAdmin, userController.listUsers);
+/**
+ * @swagger
+ * /admin/user:
+ *   delete:
+ *     summary: Admin deleta um usuário
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username do usuário a ser deletado
+ *     responses:
+ *       '200':
+ *         description: Usuário deletado com sucesso.
+ *       '400':
+ *         description: Username não fornecido.
+ *       '401':
+ *         description: Token não fornecido.
+ *       '403':
+ *         description: Apenas administradores podem acessar esta rota.
+ *       '404':
+ *         description: Usuário não encontrado.
+ */
+router.delete("/admin/user", authenticateToken, authorizeAdmin, userController.deleteUser);
+
+/**
+ * @swagger
+ * /admin/users:
+ *   get:
+ *     summary: Admin lista todos os usuários
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Lista de usuários retornada com sucesso.
+ *       '401':
+ *         description: Token não fornecido.
+ *       '403':
+ *         description: Apenas administradores podem acessar esta rota.
+ */
+router.get("/admin/users", authenticateToken, authorizeAdmin, userController.listUsers);
 
 module.exports = router;
