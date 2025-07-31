@@ -53,4 +53,12 @@ describe("Permissões de Usuário Comum", () => {
     res.status.should.equal(401);
     res.body.message.should.match(/Token não fornecido/);
   });
+
+  it("Usuário comum não pode acessar lista de usuários via /users", async () => {
+    const res = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${userToken}`);
+    res.status.should.equal(403);
+    res.body.message.should.match(/Apenas administradores/);
+  });
 });

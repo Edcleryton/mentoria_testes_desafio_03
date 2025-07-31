@@ -226,6 +226,16 @@ describe("GET /admin/users", () => {
     res.body.message.should.match(/Token não fornecido/);
   });
 
+  it("admin pode acessar lista de usuários via /users", async () => {
+    const res = await request(app)
+      .get("/users")
+      .set("Authorization", `Bearer ${adminToken}`);
+    res.status.should.equal(200);
+    res.body.should.be.an("array");
+    res.body.some((u) => u.username === "admin@email.com").should.be.true;
+    res.body.some((u) => u.username === "user@email.com").should.be.true;
+  });
+
   it("Não permite GET em /admin/user", async () => {
     const res = await request(app)
       .get("/admin/user")
