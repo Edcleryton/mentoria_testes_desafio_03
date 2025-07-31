@@ -68,6 +68,14 @@ describe("API Login de Usuários", () => {
     res.body.message.should.equal("Usuário não encontrado.");
   });
 
+  it("Lembrar senha para usuário que não existe no sistema (404)", async () => {
+    const res = await request(app)
+      .post("/remember-password")
+      .send({ username: "usuarioinexistente@email.com" });
+    res.status.should.equal(404);
+    res.body.message.should.equal("Usuário não encontrado.");
+  });
+
   it("Login com usuário proibido (403)", async () => {
     const res = await request(app)
       .post("/login")
@@ -118,7 +126,12 @@ describe("API Login de Usuários", () => {
     const res = await request(app).post("/remember-password").send({});
     res.status.should.equal(400);
     res.body.message.should.equal("Username é obrigatório.");
+  });
 
+  it("Lembrar senha com email inválido (400)", async () => {
+    const res = await request(app).post("/remember-password").send({ username: "emailinvalido" });
+    res.status.should.equal(400);
+    res.body.message.should.equal("Username (e-mail) inválido.");
   });
 
   it("Não permite GET em /remember-password", async () => {
