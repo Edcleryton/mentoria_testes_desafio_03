@@ -22,12 +22,12 @@ function authenticateToken(req, res, next) {
 
 // Middleware para autorizar apenas admin
 function authorizeAdmin(req, res, next) {
-  if (req.user && req.user.role === "admin") {
-    return next();
-  }
-  return res
-    .status(403)
-    .json({ message: "Apenas administradores podem acessar esta rota." });
+	if (req.user && req.user.role === "admin") {
+		return next();
+	}
+	return res
+		.status(403)
+		.json({ message: "Apenas administradores podem acessar esta rota." });
 }
 
 /**
@@ -255,5 +255,22 @@ router.delete("/admin/user", authenticateToken, authorizeAdmin, userController.d
  *         description: Apenas administradores podem acessar esta rota.
  */
 router.get("/admin/users", authenticateToken, authorizeAdmin, userController.listUsers);
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Admin lista todos os usuários (alternativa)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Lista de usuários retornada com sucesso.
+ *       '401':
+ *         description: Token não fornecido.
+ *       '403':
+ *         description: Apenas administradores podem acessar esta rota.
+ */
+router.get("/users", authenticateToken, authorizeAdmin, userController.listUsers);
 
 module.exports = router;
