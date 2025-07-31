@@ -3,6 +3,7 @@ require('dotenv').config();
 const { logDebug } = require('./utils/logger');
 
 const express = require('express');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerDocument = require('./swagger.json');
@@ -11,6 +12,9 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
+
+// Adicionando CORS
+app.use(cors());
 
 // Middleware de logging para debug
 app.use((req, res, next) => {

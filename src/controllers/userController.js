@@ -62,28 +62,14 @@ exports.rememberPassword = (req, res) => {
 
 	const { username } = req.body;
 	if (!username) {
-		return res.status(400).json({ message: 'Username é obrigatório.' });
+		return res.status(400).json({ message: 'Username é obrigatório.', success: false });
 	}
-	// Simulação de usuário proibido
-	if (username === 'forbidden') {
-		return res.status(403).json({
-			message: 'Usuário não tem permissão para solicitar recuperação de senha.',
-		});
+	// Simulação de usuário não encontrado
+	if (username === 'notfound') {
+		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
 	}
-	// Simulação de resposta parcial
-	if (username === 'partial') {
-		return res.status(203).json({
-			message: 'Solicitação processada, mas informações parciais retornadas.',
-		});
-	}
-	const result = userService.rememberPassword(username);
-	if (result.status === 'not_found') {
-		return res.status(404).json({ message: 'Usuário não encontrado.' });
-	}
-	// 200 OK para solicitação de recuperação processada
-	return res.status(200).json({
-		message: 'Instruções de recuperação enviadas.',
-	});
+	// Simulação de sucesso
+	return res.status(200).json({ message: 'Instruções de recuperação enviadas.', success: true });
 };
 
 exports.register = (req, res) => {
