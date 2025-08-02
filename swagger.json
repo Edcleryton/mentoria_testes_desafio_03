@@ -384,6 +384,10 @@
 										"type": "string",
 										"minLength": 12,
 										"maxLength": 16
+									},
+									"blocked": {
+										"type": "boolean",
+										"description": "Define se o usuário está bloqueado (true) ou desbloqueado (false)"
 									}
 								},
 								"required": ["username"]
@@ -391,7 +395,8 @@
 							"example": {
 								"username": "user@email.com",
 								"newUsername": "novo@email.com",
-								"newPassword": "NovaSenha123456!"
+								"newPassword": "NovaSenha123456!",
+								"blocked": false
 							}
 						}
 					}

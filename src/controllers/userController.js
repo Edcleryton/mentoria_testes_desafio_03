@@ -61,36 +61,40 @@ exports.rememberPassword = (req, res) => {
 	logDebug('Request headers:', req.headers);
 
 	const { username } = req.body;
-	
+
 	if (!username) {
 		return res.status(400).json({ message: 'Username é obrigatório.', success: false });
 	}
-	
+
 	// Validação de email
 	if (!isValidEmail(username)) {
 		return res.status(400).json({ message: 'Username (e-mail) inválido.', success: false });
 	}
-	
+
 	// Simulação de usuário não encontrado
 	if (username === 'notfound' || username === 'naoexiste') {
 		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
 	}
 	// Simulação de usuário proibido
 	if (username === 'forbidden') {
-		return res.status(403).json({ message: 'Usuário não tem permissão para solicitar recuperação de senha.', success: false });
+		return res
+			.status(403)
+			.json({ message: 'Usuário não tem permissão para solicitar recuperação de senha.', success: false });
 	}
 	// Simulação de resposta parcial
 	if (username === 'partial') {
-		return res.status(203).json({ message: 'Solicitação processada, mas informações parciais retornadas.', success: true });
+		return res
+			.status(203)
+			.json({ message: 'Solicitação processada, mas informações parciais retornadas.', success: true });
 	}
-	
+
 	// Validação se o usuário existe no sistema
 	const result = userService.rememberPassword(username);
-	
+
 	if (result.status === 'not_found') {
 		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
 	}
-	
+
 	// Simulação de sucesso
 	return res.status(200).json({ message: 'Instruções de recuperação enviadas.', success: true });
 };
@@ -148,7 +152,7 @@ exports.updateUser = (req, res) => {
 exports.updateUserByAdmin = (req, res) => {
 	console.log('updateUserByAdmin - req.user:', req.user);
 	console.log('updateUserByAdmin - req.body:', req.body);
-	const { username: targetUsername, newPassword, password, newUsername } = req.body;
+	const { username: targetUsername, newPassword, password, newUsername, blocked } = req.body;
 	const { role } = req.user;
 	if (role !== 'admin') {
 		return res.status(403).json({
@@ -176,6 +180,17 @@ exports.updateUserByAdmin = (req, res) => {
 		}
 		newData.username = newUsername;
 	}
+
+	let parsedBlocked = blocked;
+	if (typeof blocked === 'string') {
+		if (blocked.toLowerCase() === 'true') parsedBlocked = true;
+		else if (blocked.toLowerCase() === 'false') parsedBlocked = false;
+	}
+
+	if (typeof parsedBlocked === 'boolean') {
+		newData.blocked = parsedBlocked;
+	}
+
 	const result = userService.updateUserByAdmin(targetUsername, newData);
 	if (result.status === 'not_found') {
 		return res.status(404).json({ message: 'Usuário não encontrado.' });
