@@ -443,6 +443,37 @@
 					"404": { "description": "Usuário não encontrado." }
 				}
 			}
+		},
+		"/admin/reset-users": {
+			"post": {
+				"summary": "Admin: Restaura usuários ao estado inicial (reset)",
+				"description": "Restaura a base de usuários para o estado inicial de exemplo. Apenas administradores podem acessar esta rota.",
+				"security": [{ "bearerAuth": [] }],
+				"responses": {
+					"200": {
+						"description": "Usuários resetados com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": { "type": "string" }
+									}
+								},
+								"example": {
+									"message": "Usuários resetados com sucesso."
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Token não fornecido."
+					},
+					"403": {
+						"description": "Apenas administradores podem acessar esta rota."
+					}
+				}
+			}
 		}
 	}
 }

@@ -206,6 +206,9 @@ exports.deleteUser = (req, res) => {
 	if (role !== 'admin') {
 		return res.status(403).json({ message: 'Apenas administradores podem deletar usuários.' });
 	}
+	if (req.user.username === targetUsername) {
+		return res.status(400).json({ message: 'Um administrador não pode se auto-deletar.' });
+	}
 	if (!targetUsername) {
 		return res.status(400).json({ message: 'Username do usuário a ser deletado é obrigatório.' });
 	}
@@ -218,6 +221,7 @@ exports.deleteUser = (req, res) => {
 
 exports.listUsers = (req, res) => {
 	// Busca todos os usuários, mas não retorna a senha
+	console.log('listUsers - req.user:', req.user);
 	const users = userService.getAllUsers().map((u) => ({
 		username: u.username,
 		role: u.role,
@@ -225,4 +229,11 @@ exports.listUsers = (req, res) => {
 		attempts: u.attempts,
 	}));
 	res.status(200).json(users);
+};
+
+exports.resetUsers = (req, res) => {
+	console.log('listUsers - req.user:', req.user);
+	console.log('deleteUser - req.body:', req.body);
+	userService._reset();
+	return res.status(200).json({ message: 'Usuários resetados com sucesso.' });
 };
