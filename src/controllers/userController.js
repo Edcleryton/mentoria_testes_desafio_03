@@ -1,5 +1,9 @@
+require('dotenv').config();
 const userService = require('../services/userService');
 const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error('FATAL: JWT_SECRET não definido. Crie um arquivo .env com base em .env.example');
 
 const { logDebug } = require('../../utils/logger');
 
@@ -45,7 +49,7 @@ exports.login = (req, res) => {
 	}
 	if (result.status === 'success') {
 		// Geração do token JWT com role
-		const token = jwt.sign({ username, role: result.user.role }, 'secreta_super_segura', { expiresIn: '1h' });
+		const token = jwt.sign({ username, role: result.user.role }, JWT_SECRET, { expiresIn: '1h' });
 		return res.status(200).json({
 			message: 'Login realizado com sucesso.',
 			token,

@@ -1,17 +1,19 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const userService = require('../services/userService');
 const jwt = require('jsonwebtoken');
 
-// Middleware para autenticação JWT
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error('FATAL: JWT_SECRET não definido. Crie um arquivo .env com base em .env.example');
+
 function authenticateToken(req, res, next) {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
 	if (!token) return res.status(401).json({ message: 'Token não fornecido.' });
-	jwt.verify(token, 'secreta_super_segura', (err, decoded) => {
+	jwt.verify(token, JWT_SECRET, (err, decoded) => {
 		if (err) return res.status(403).json({ message: 'Token inválido.' });
-		// Garante que role está atualizado (caso o usuário tenha sido alterado)
 		const user = userService.getUser(decoded.username);
 		if (!user) return res.status(403).json({ message: 'Usuário não encontrado.' });
 		req.user = { username: user.username, role: user.role };
