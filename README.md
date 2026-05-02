@@ -19,14 +19,16 @@
 
 ## Histórico de Alterações
 
-- Implementação de autenticação JWT (Bearer Token) para todos os endpoints protegidos.
+- Autenticação JWT real (Bearer Token) em todos os endpoints protegidos — segredo via variável de ambiente `JWT_SECRET`.
+- Hashing de senhas com **bcryptjs** (rounds=10); senhas nunca armazenadas em texto puro.
 - Adição de roles de usuário: `admin` e `user`.
 - Criação de usuários administradores: `admin@email.com`, `edcleryton.silva@email.com`, `jorge.mercado@email.com`.
 - Criação de endpoint PATCH `/admin/user` para administradores alterarem nome/senha de qualquer usuário.
-- Criação de endpoint DELETE `/user` para administradores deletarem qualquer usuário.
+- Criação de endpoint DELETE `/admin/user` para administradores deletarem qualquer usuário.
+- Endpoint `GET /users` listando todos os usuários (admin only).
 - Novo endpoint: `GET /health` para verificar se a API está online.
 - Adicionado suporte a logs de debug via variável de ambiente `DEBUG=true`.
-- Separação dos testes automatizados em blocos distintos.
+- Correção da ordem de verificação no endpoint `/remember-password` (usernames especiais antes da validação de email).
 - Documentação Swagger e exemplos de requisição atualizados.
 
 ## Documentação Swagger
@@ -61,11 +63,14 @@ A documentação interativa da API está disponível em:
    Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
    ```env
-   DEBUG=true
+   JWT_SECRET=<seu_segredo_aleatorio_256bits>
    PORT=3000
+   DEBUG=true
    ```
 
-   > `DEBUG=true` ativa logs de debug no terminal. É opcional, mas útil para desenvolvimento.
+   > `JWT_SECRET` é **obrigatório**. Gere um valor seguro com: `node -e "require('crypto').randomBytes(32).toString('hex')"`
+   >
+   > `DEBUG=true` ativa logs detalhados no terminal. É opcional.
 
 4. **Inicie a aplicação:**
 
@@ -83,6 +88,8 @@ A documentação interativa da API está disponível em:
 npm test
 ```
 
+**Resultado: 70/70 testes passando** (6 arquivos de teste).
+
 ## Usuários de exemplo
 
 > ⚠️ **Atenção:** Nunca use essas senhas em produção!
@@ -93,6 +100,7 @@ npm test
 | [edcleryton.silva@email.com](mailto:edcleryton.silva@email.com) | admin | Admin123456!  |
 | [jorge.mercado@email.com](mailto:jorge.mercado@email.com)       | admin | Admin123456!  |
 | [user@email.com](mailto:user@email.com)                         | comum | User12345678! |
+| [user2@email.com](mailto:user2@email.com)                        | comum | User12345678! |
 
 ## Autenticação
 
@@ -220,6 +228,7 @@ test/
 * `swagger-ui-express`
 * `swagger-jsdoc`
 * `jsonwebtoken`
+* `bcryptjs`
 * `dotenv`
 * `mocha`, `chai`, `supertest` (testes)
 
