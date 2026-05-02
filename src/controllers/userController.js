@@ -70,26 +70,24 @@ exports.rememberPassword = (req, res) => {
 		return res.status(400).json({ message: 'Username é obrigatório.', success: false });
 	}
 
-	// Validação de email
-	if (!isValidEmail(username)) {
-		return res.status(400).json({ message: 'Username (e-mail) inválido.', success: false });
-	}
-
-	// Simulação de usuário não encontrado
+	// Usernames especiais para simulação de cenários de teste (verificados antes da validação de email)
 	if (username === 'notfound' || username === 'naoexiste') {
 		return res.status(404).json({ message: 'Usuário não encontrado.', success: false });
 	}
-	// Simulação de usuário proibido
 	if (username === 'forbidden') {
 		return res
 			.status(403)
 			.json({ message: 'Usuário não tem permissão para solicitar recuperação de senha.', success: false });
 	}
-	// Simulação de resposta parcial
 	if (username === 'partial') {
 		return res
 			.status(203)
 			.json({ message: 'Solicitação processada, mas informações parciais retornadas.', success: true });
+	}
+
+	// Validação de email aplicada apenas para usernames reais
+	if (!isValidEmail(username)) {
+		return res.status(400).json({ message: 'Username (e-mail) inválido.', success: false });
 	}
 
 	// Validação se o usuário existe no sistema

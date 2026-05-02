@@ -270,6 +270,8 @@ router.get('/admin/users', authenticateToken, authorizeAdmin, userController.lis
  *       '403':
  *         description: Apenas administradores podem acessar esta rota.
  */
+router.get('/users', authenticateToken, authorizeAdmin, userController.listUsers);
+
 router.post('/admin/reset-users', authenticateToken, authorizeAdmin, userController.resetUsers);
 
 /**
